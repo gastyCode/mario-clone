@@ -9,7 +9,9 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.cockatielstudios.gameObjects.tiles.Block;
+import com.cockatielstudios.gameObjects.tiles.Ground;
 import com.cockatielstudios.screens.GameScreen;
+import static com.cockatielstudios.Constants.*;
 
 public class MapParser {
     private GameScreen screen;
@@ -19,7 +21,7 @@ public class MapParser {
     public MapParser(TiledMap map, GameScreen screen) {
         this.screen = screen;
         this.map = map;
-        this.renderer = new OrthogonalTiledMapRenderer(this.map);
+        this.renderer = new OrthogonalTiledMapRenderer(this.map, 1 / PPM);
 
     }
 
@@ -33,9 +35,28 @@ public class MapParser {
 
     public void parseObjects() {
         MapObjects groundObjects = this.map.getLayers().get("Ground").getObjects();
+        MapObjects pipeObjects = this.map.getLayers().get("Pipes").getObjects();
+        MapObjects blockObjects = this.map.getLayers().get("Blocks").getObjects();
+
         for (MapObject groundBlock : groundObjects) {
             if (groundBlock instanceof RectangleMapObject) {
                 Rectangle rect = ((RectangleMapObject) groundBlock).getRectangle();
+                Vector2 position = new Vector2(rect.getX(), rect.getY());
+
+                new Ground(this.screen, position, rect.getWidth(), rect.getHeight());
+            }
+        }
+        for (MapObject pipe : pipeObjects) {
+            if (pipe instanceof RectangleMapObject) {
+                Rectangle rect = ((RectangleMapObject) pipe).getRectangle();
+                Vector2 position = new Vector2(rect.getX(), rect.getY());
+
+                new Ground(this.screen, position, rect.getWidth(), rect.getHeight());
+            }
+        }
+        for (MapObject block : blockObjects) {
+            if (block instanceof RectangleMapObject) {
+                Rectangle rect = ((RectangleMapObject) block).getRectangle();
                 Vector2 position = new Vector2(rect.getX(), rect.getY());
 
                 new Block(this.screen, position, rect.getWidth(), rect.getHeight());

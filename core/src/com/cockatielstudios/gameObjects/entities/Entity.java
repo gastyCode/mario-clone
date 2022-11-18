@@ -8,7 +8,6 @@ import com.cockatielstudios.screens.GameScreen;
 
 public abstract class Entity extends GameObject {
     private State state;
-    private float speed;
 
     public Entity(GameScreen screen, Vector2 position, float width, float height) {
         super(screen, position, width, height);
@@ -26,9 +25,5 @@ public abstract class Entity extends GameObject {
 
     public void setState(State state) {
         this.state = state;
-    }
-
-    public void setSpeed(float speed) {
-        this.speed = speed;
     }
 }

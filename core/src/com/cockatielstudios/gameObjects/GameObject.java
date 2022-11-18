@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.cockatielstudios.screens.GameScreen;
+import com.cockatielstudios.utils.CollisionListener;
+import static com.cockatielstudios.Constants.*;
 
 public abstract class GameObject {
     private GameScreen screen;
@@ -15,11 +17,9 @@ public abstract class GameObject {
 
     public GameObject(GameScreen screen, Vector2 position, float width, float height) {
         this.screen = screen;
-        this.position = position;
-        this.width = width;
-        this.height = height;
-
-        this.createBody(this.position);
+        this.position = new Vector2(position.x / PPM, position.y / PPM);
+        this.width = width / PPM;
+        this.height = height / PPM;
     }
 
     public float getWidth() {
@@ -38,6 +38,14 @@ public abstract class GameObject {
         return position;
     }
 
+    public CollisionListener getCollisions() {
+        return screen.collisionListener;
+    }
+
+    public void setCornerPosition(Vector2 position) {
+        this.position = new Vector2(position.x  - (this.getWidth() / 2), position.y - (this.getHeight() / 2));
+    }
+
     public void setPosition(Vector2 position) {
         this.position = position;
     }
@@ -47,22 +55,4 @@ public abstract class GameObject {
     public abstract void update(float delta);
 
     public abstract void dispose();
-
-    protected void createBody(Vector2 position) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(position);
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-
-        PolygonShape polygonShape = new PolygonShape();
-        polygonShape.setAsBox(this.getWidth() / 2, this.getHeight() / 2);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = polygonShape;
-        //fixtureDef.density = 1f;
-
-        this.body = this.getWorld().createBody(bodyDef);
-        this.body.createFixture(fixtureDef);
-
-        polygonShape.dispose();
-    }
 }
