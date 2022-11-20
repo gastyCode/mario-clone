@@ -1,9 +1,12 @@
 package com.cockatielstudios.utils;
 
 import com.badlogic.gdx.physics.box2d.*;
+import com.cockatielstudios.gameObjects.tiles.Block;
 
 public class CollisionListener implements ContactListener {
-    private boolean isPlayerGrounded;
+    private boolean playerGrounded;
+    private boolean playerFellOut;
+    private int collidedBlockID;
 
     @Override
     public void beginContact(Contact contact) {
@@ -11,12 +14,25 @@ public class CollisionListener implements ContactListener {
         Fixture fixtureB = contact.getFixtureB();
 
         if (fixtureA.getUserData().equals("playerBottom") || fixtureB.getUserData().equals("playerBottom")) {
-            isPlayerGrounded = true;
+            this.playerGrounded = true;
         }
 
-        if ((fixtureA.getUserData().equals("playerTop") || fixtureA.getUserData().equals("playerTop")) &&
-                (fixtureA.getUserData().equals("block") || fixtureA.getUserData().equals("block"))) {
-            System.out.println("head");
+        if (fixtureA.getUserData().equals("playerTop") || fixtureB.getUserData().equals("playerTop") &&
+                fixtureA.getUserData() instanceof Block || fixtureB.getUserData() instanceof Block) {
+
+            Block block = null;
+            if (fixtureA.getUserData() instanceof Block) {
+                block = (Block) fixtureA.getUserData();
+            } else if (fixtureB.getUserData() instanceof Block) {
+                block = (Block) fixtureB.getUserData();
+            }
+            assert block != null;
+            this.collidedBlockID = block.getId();
+        }
+
+        if (fixtureA.getUserData().equals("playerBottom") || fixtureA.getUserData().equals("playerBottom") &&
+                fixtureA.getUserData().equals("fall") || fixtureA.getUserData().equals("fall")) {
+            this.playerFellOut = true;
         }
     }
 
@@ -26,7 +42,7 @@ public class CollisionListener implements ContactListener {
         Fixture fixtureB = contact.getFixtureB();
 
         if (fixtureA.getUserData().equals("playerBottom") || fixtureB.getUserData().equals("playerBottom")) {
-            isPlayerGrounded = false;
+            this.playerGrounded = false;
         }
     }
 
@@ -41,6 +57,14 @@ public class CollisionListener implements ContactListener {
     }
 
     public boolean isPlayerGrounded() {
-        return isPlayerGrounded;
+        return playerGrounded;
+    }
+
+    public int getCollidedBlockID() {
+        return collidedBlockID;
+    }
+
+    public boolean isPlayerFellOut() {
+        return playerFellOut;
     }
 }

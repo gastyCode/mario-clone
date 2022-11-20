@@ -3,7 +3,6 @@ package com.cockatielstudios.gameObjects.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -54,6 +53,9 @@ public class Player extends Entity{
     public void update(float delta) {
         this.movement();
         this.canJump = this.getCollisions().isPlayerGrounded();
+        if (this.getCollisions().isPlayerFellOut()) {
+            this.destroy();
+        }
 
         this.setCornerPosition(this.body.getPosition());
     }
@@ -127,6 +129,10 @@ public class Player extends Entity{
 
     public void takeDamage() {
 
+    }
+
+    public void destroy() {
+        this.dispose();
     }
 
     public void giveDamage(Entity entity) {

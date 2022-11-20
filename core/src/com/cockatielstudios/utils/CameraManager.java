@@ -28,8 +28,8 @@ public class CameraManager {
     }
 
     private void moveCamera() {
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            camera.position.x += CAMERA_SPEED;
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            camera.position.y -= CAMERA_SPEED;
         }
         if (this.player.getPosition().x > this.movedDistance) {
             this.camera.position.x = this.player.getPosition().x - (WORLD_WIDTH / PPM) / 6;

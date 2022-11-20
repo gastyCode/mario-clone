@@ -8,6 +8,7 @@ public class Constants {
 
     public static final int WORLD_WIDTH = 400;
     public static final int WORLD_HEIGHT = 220;
+    public static final float FALL_SENSOR_HEIGHT = 1f;
 
     public static final float PPM = 100f;
     public static final float GRAVITY = -10f;
