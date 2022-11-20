@@ -32,7 +32,7 @@ public class Player extends Entity{
 
     public Player(GameScreen screen, Vector2 position, float width, float height) {
         super(screen, position, width, height);
-        this.setState(State.SMALL);
+        this.setState(State.BIG);
         this.createBody(this.getPosition());
 
         this.canJump = false;

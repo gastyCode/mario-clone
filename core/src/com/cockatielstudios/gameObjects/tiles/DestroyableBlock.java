@@ -1,5 +1,6 @@
 package com.cockatielstudios.gameObjects.tiles;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -9,14 +10,28 @@ import com.cockatielstudios.screens.GameScreen;
 
 public abstract class DestroyableBlock extends GameObject {
     private int id;
+    private Texture destroyedTile;
 
     public DestroyableBlock(GameScreen screen, Vector2 position, float width, float height, int id) {
         super(screen, position, width, height);
         this.id = id;
+        this.destroyedTile = null;
+    }
+
+    public int getID() {
+        return id;
+    }
+
+    public void setDestroyedTile(Texture destroyedTile) {
+        this.destroyedTile = destroyedTile;
     }
 
     @Override
-    public abstract void render(SpriteBatch spriteBatch);
+    public void render(SpriteBatch spriteBatch) {
+        if (this.destroyedTile != null) {
+            spriteBatch.draw(this.destroyedTile, this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
+        }
+    }
 
     @Override
     public abstract void update(float delta);
@@ -25,10 +40,6 @@ public abstract class DestroyableBlock extends GameObject {
     public abstract void dispose();
 
     public abstract void onCollision();
-
-    public int getId() {
-        return id;
-    }
 
     protected <T> void createBody(Vector2 position, T object) {
         BodyDef bodyDef = new BodyDef();

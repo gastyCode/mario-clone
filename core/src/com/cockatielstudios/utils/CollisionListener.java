@@ -2,11 +2,29 @@ package com.cockatielstudios.utils;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.cockatielstudios.gameObjects.tiles.Block;
+import com.cockatielstudios.gameObjects.tiles.MysteryBlock;
 
 public class CollisionListener implements ContactListener {
     private boolean playerGrounded;
     private boolean playerFellOut;
     private int collidedBlockID;
+    private int collidedMysteryBlockID;
+
+    public boolean isPlayerGrounded() {
+        return playerGrounded;
+    }
+
+    public int getCollidedMysteryBlockID() {
+        return collidedMysteryBlockID;
+    }
+
+    public int getCollidedBlockID() {
+        return collidedBlockID;
+    }
+
+    public boolean isPlayerFellOut() {
+        return playerFellOut;
+    }
 
     @Override
     public void beginContact(Contact contact) {
@@ -27,7 +45,20 @@ public class CollisionListener implements ContactListener {
                 block = (Block) fixtureB.getUserData();
             }
             assert block != null;
-            this.collidedBlockID = block.getId();
+            this.collidedBlockID = block.getID();
+        }
+
+        if (fixtureA.getUserData().equals("playerTop") || fixtureB.getUserData().equals("playerTop") &&
+                fixtureA.getUserData() instanceof MysteryBlock || fixtureB.getUserData() instanceof MysteryBlock) {
+
+            MysteryBlock mysteryBlock = null;
+            if (fixtureA.getUserData() instanceof MysteryBlock) {
+                mysteryBlock = (MysteryBlock) fixtureA.getUserData();
+            } else if (fixtureB.getUserData() instanceof MysteryBlock) {
+                mysteryBlock = (MysteryBlock) fixtureB.getUserData();
+            }
+            assert mysteryBlock != null;
+            this.collidedMysteryBlockID = mysteryBlock.getID();
         }
 
         if (fixtureA.getUserData().equals("playerBottom") || fixtureA.getUserData().equals("playerBottom") &&
@@ -54,17 +85,5 @@ public class CollisionListener implements ContactListener {
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
 
-    }
-
-    public boolean isPlayerGrounded() {
-        return playerGrounded;
-    }
-
-    public int getCollidedBlockID() {
-        return collidedBlockID;
-    }
-
-    public boolean isPlayerFellOut() {
-        return playerFellOut;
     }
 }

@@ -4,10 +4,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.cockatielstudios.Assets;
 import com.cockatielstudios.screens.GameScreen;
 
-public class Block extends DestroyableBlock {
-    public Block(GameScreen screen, Vector2 position, float width, float height, int id) {
+public class MysteryBlock extends DestroyableBlock{
+    private boolean isActive;
+
+    public MysteryBlock(GameScreen screen, Vector2 position, float width, float height, int id) {
         super(screen, position, width, height, id);
         this.createBody(this.getPosition(), this);
+        this.isActive = true;
     }
 
     @Override
@@ -22,7 +25,9 @@ public class Block extends DestroyableBlock {
 
     @Override
     public void onCollision() {
-        this.body.setActive(false);
-        this.setDestroyedTile(Assets.manager.get(Assets.emptyTile));
+        if (this.isActive) {
+            this.isActive = false;
+            this.setDestroyedTile(Assets.manager.get(Assets.emptyBlock));
+        }
     }
 }

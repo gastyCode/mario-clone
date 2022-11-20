@@ -1,6 +1,7 @@
 package com.cockatielstudios.utils;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
@@ -13,12 +14,11 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.cockatielstudios.gameObjects.tiles.Block;
 import com.cockatielstudios.gameObjects.tiles.Ground;
+import com.cockatielstudios.gameObjects.tiles.MysteryBlock;
 import com.cockatielstudios.screens.GameScreen;
 
-import javax.naming.PartialResultException;
 import java.util.ArrayList;
 
 import static com.cockatielstudios.Constants.*;
@@ -30,6 +30,7 @@ public class MapParser {
     private Body fallSensorBody;
 
     private ArrayList<Block> blocks;
+    private ArrayList<MysteryBlock> mysteryBlocks;
 
     public MapParser(TiledMap map, GameScreen screen) {
         this.screen = screen;
@@ -38,6 +39,7 @@ public class MapParser {
         this.createFallSensor(new Vector2(0f, -FALL_SENSOR_HEIGHT), WORLD_WIDTH, FALL_SENSOR_HEIGHT);
 
         this.blocks = new ArrayList<Block>();
+        this.mysteryBlocks = new ArrayList<MysteryBlock>();
 
     }
 
@@ -49,8 +51,16 @@ public class MapParser {
         return this.screen.collisionListener;
     }
 
-    public void render() {
+    public void render(SpriteBatch spriteBatch) {
         this.renderer.render();
+
+        for (Block block : this.blocks) {
+            block.render(spriteBatch);
+        }
+
+        for (MysteryBlock mysteryBlock : this.mysteryBlocks) {
+            mysteryBlock.render(spriteBatch);
+        }
     }
 
     public void update(OrthographicCamera camera) {
@@ -62,6 +72,7 @@ public class MapParser {
         MapObjects groundObjects = this.map.getLayers().get("Ground").getObjects();
         MapObjects pipeObjects = this.map.getLayers().get("Pipes").getObjects();
         MapObjects blockObjects = this.map.getLayers().get("Blocks").getObjects();
+        MapObjects mysteryBlockObjects = this.map.getLayers().get("MysteryBlocks").getObjects();
 
         for (MapObject groundBlock : groundObjects) {
             if (groundBlock instanceof RectangleMapObject) {
@@ -88,12 +99,29 @@ public class MapParser {
                 this.blocks.add(new Block(this.screen, position, rect.getWidth(), rect.getHeight(), props.get("id", Integer.class)));
             }
         }
+        for (MapObject mysteryBlock : mysteryBlockObjects) {
+            if (mysteryBlock instanceof RectangleMapObject) {
+                Rectangle rect = ((RectangleMapObject) mysteryBlock).getRectangle();
+                Vector2 position = new Vector2(rect.getX(), rect.getY());
+                MapProperties props = mysteryBlock.getProperties();
+
+                this.mysteryBlocks.add(new MysteryBlock(this.screen, position, rect.getWidth(), rect.getHeight(), props.get("id", Integer.class)));
+            }
+        }
     }
 
     private void checkObjects() {
-        for (Block block : this.blocks) {
-            if (block.getId() == this.getCollisions().getCollidedBlockID()) {
-                block.body.setActive(false);
+        if (this.screen.player.getState() != State.SMALL) {
+            for (Block block : this.blocks) {
+                if (block.getID() == this.getCollisions().getCollidedBlockID()) {
+                    block.onCollision();
+                }
+            }
+        }
+
+        for (MysteryBlock mysteryBlock : this.mysteryBlocks) {
+            if (mysteryBlock.getID() == this.getCollisions().getCollidedMysteryBlockID()) {
+                mysteryBlock.onCollision();
             }
         }
     }

@@ -74,10 +74,9 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
 
-        this.mapParser.render();
-
         this.game.spriteBatch.setProjectionMatrix(this.camera.combined);
         this.game.spriteBatch.begin();
+        this.mapParser.render(this.game.spriteBatch);
         this.player.render(this.game.spriteBatch);
         this.game.spriteBatch.end();
 

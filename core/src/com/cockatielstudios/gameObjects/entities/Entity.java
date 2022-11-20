@@ -13,6 +13,14 @@ public abstract class Entity extends GameObject {
         super(screen, position, width, height);
     }
 
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
     @Override
     public abstract void render(SpriteBatch spriteBatch);
 
@@ -22,8 +30,4 @@ public abstract class Entity extends GameObject {
     public abstract void movement();
 
     public abstract void animate();
-
-    public void setState(State state) {
-        this.state = state;
-    }
 }
