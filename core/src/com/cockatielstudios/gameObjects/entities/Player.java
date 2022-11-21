@@ -40,10 +40,6 @@ public class Player extends Entity{
         this.test = Assets.manager.get(Assets.player);
     }
 
-    public void setCanJump(boolean canJump) {
-        this.canJump = canJump;
-    }
-
     @Override
     public void render(SpriteBatch spriteBatch) {
         spriteBatch.draw(this.test, this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
@@ -93,7 +89,7 @@ public class Player extends Entity{
         bodyDef.position.y = position.y;
 
         PolygonShape polygonShape = new PolygonShape();
-        polygonShape.setAsBox(this.getWidth() / 2, this.getHeight() / 2, new Vector2(0, 0.02f), 0f);
+        polygonShape.setAsBox(this.getWidth() / 3, this.getHeight() / 2f - 0.01f, new Vector2(0, 0), 0f);
 
         this.body = this.getWorld().createBody(bodyDef);
 
@@ -105,13 +101,13 @@ public class Player extends Entity{
         this.body.createFixture(fixtureDef).setUserData("player");
 
         // Create player bottom sensor
-        polygonShape.setAsBox(this.getWidth() / 4, this.getHeight() / 12, new Vector2(0, -this.getHeight() / 2), 0f);
+        polygonShape.setAsBox(this.getWidth() / 10, this.getHeight() / 100, new Vector2(0, -this.getHeight() / 2), 0f);
         fixtureDef.shape = polygonShape;
         fixtureDef.isSensor = true;
         this.body.createFixture(fixtureDef).setUserData("playerBottom");
 
         // Create player top sensor
-        polygonShape.setAsBox(this.getWidth() / 4, this.getHeight() / 12, new Vector2(0, this.getHeight() / 1.8f), 0f);
+        polygonShape.setAsBox(this.getWidth() / 10, this.getHeight() / 100, new Vector2(0, this.getHeight() / 1.8f), 0f);
         fixtureDef.shape = polygonShape;
         fixtureDef.isSensor = true;
         this.body.createFixture(fixtureDef).setUserData("playerTop");
