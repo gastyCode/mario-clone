@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.cockatielstudios.screens.GameScreen;
 import com.cockatielstudios.utils.CollisionListener;
+
 import static com.cockatielstudios.Constants.*;
 
 public abstract class GameObject {
@@ -28,6 +29,10 @@ public abstract class GameObject {
 
     public float getHeight() {
         return this.height;
+    }
+
+    public GameScreen getScreen() {
+        return screen;
     }
 
     public World getWorld() {

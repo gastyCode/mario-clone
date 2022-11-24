@@ -14,9 +14,11 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.cockatielstudios.gameObjects.items.Mushroom;
 import com.cockatielstudios.gameObjects.tiles.Block;
 import com.cockatielstudios.gameObjects.tiles.Ground;
 import com.cockatielstudios.gameObjects.tiles.MysteryBlock;
+import com.cockatielstudios.gameObjects.tiles.Pipe;
 import com.cockatielstudios.screens.GameScreen;
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ public class MapParser {
 
     private ArrayList<Block> blocks;
     private ArrayList<MysteryBlock> mysteryBlocks;
+    private ArrayList<Mushroom> mushrooms;
 
     public MapParser(TiledMap map, GameScreen screen) {
         this.screen = screen;
@@ -40,6 +43,9 @@ public class MapParser {
 
         this.blocks = new ArrayList<Block>();
         this.mysteryBlocks = new ArrayList<MysteryBlock>();
+
+        this.mushrooms = new ArrayList<Mushroom>();
+        this.mushrooms.add(new Mushroom(this.screen, new Vector2(32f, 32f), 16, 16, 1));
 
     }
 
@@ -60,6 +66,11 @@ public class MapParser {
 
         for (MysteryBlock mysteryBlock : this.mysteryBlocks) {
             mysteryBlock.render(spriteBatch);
+        }
+
+        for (Mushroom mushroom : this.mushrooms) {
+            mushroom.render(spriteBatch);
+            mushroom.update(0f);
         }
     }
 
@@ -87,7 +98,7 @@ public class MapParser {
                 Rectangle rect = ((RectangleMapObject) pipe).getRectangle();
                 Vector2 position = new Vector2(rect.getX(), rect.getY());
 
-                new Ground(this.screen, position, rect.getWidth(), rect.getHeight());
+                new Pipe(this.screen, position, rect.getWidth(), rect.getHeight());
             }
         }
         for (MapObject block : blockObjects) {
@@ -124,6 +135,12 @@ public class MapParser {
                 mysteryBlock.onCollision();
             }
         }
+
+        for (Mushroom mushroom : this.mushrooms) {
+            if (mushroom.getID() == this.getCollisions().getCollidedMushroomID()) {
+                mushroom.onCollision();
+            }
+        }
     }
 
     public void createFallSensor(Vector2 position, float width, float height) {
@@ -136,7 +153,7 @@ public class MapParser {
         polygonShape.setAsBox(width / 2, height / 2);
 
         this.fallSensorBody = this.getWorld().createBody(bodyDef);
-        this.fallSensorBody.createFixture(polygonShape, 0f).setUserData("fall");
+        this.fallSensorBody.createFixture(polygonShape, 0f).setUserData(ObjectName.FALL_DETECTOR);
 
         polygonShape.dispose();
     }

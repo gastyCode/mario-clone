@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.cockatielstudios.Assets;
+import com.cockatielstudios.utils.ObjectName;
 import com.cockatielstudios.utils.State;
 import com.cockatielstudios.screens.GameScreen;
 
@@ -32,7 +33,7 @@ public class Player extends Entity{
 
     public Player(GameScreen screen, Vector2 position, float width, float height) {
         super(screen, position, width, height);
-        this.setState(State.BIG);
+        this.setState(State.SMALL);
         this.createBody(this.getPosition());
 
         this.canJump = false;
@@ -49,6 +50,8 @@ public class Player extends Entity{
     public void update(float delta) {
         this.movement();
         this.canJump = this.getCollisions().isPlayerGrounded();
+        this.checkStateChange(this.getCollisions().getStateChange());
+
         if (this.getCollisions().isPlayerFellOut()) {
             this.destroy();
         }
@@ -98,29 +101,25 @@ public class Player extends Entity{
         fixtureDef.shape = polygonShape;
         fixtureDef.density = PLAYER_DENSITY;
         fixtureDef.friction = 1.2f;
-        this.body.createFixture(fixtureDef).setUserData("player");
+        this.body.createFixture(fixtureDef).setUserData(ObjectName.PLAYER);
 
         // Create player bottom sensor
         polygonShape.setAsBox(this.getWidth() / 10, this.getHeight() / 100, new Vector2(0, -this.getHeight() / 2), 0f);
         fixtureDef.shape = polygonShape;
         fixtureDef.isSensor = true;
-        this.body.createFixture(fixtureDef).setUserData("playerBottom");
+        this.body.createFixture(fixtureDef).setUserData(ObjectName.PLAYER_BOTTOM);
 
         // Create player top sensor
         polygonShape.setAsBox(this.getWidth() / 10, this.getHeight() / 100, new Vector2(0, this.getHeight() / 1.8f), 0f);
         fixtureDef.shape = polygonShape;
         fixtureDef.isSensor = true;
-        this.body.createFixture(fixtureDef).setUserData("playerTop");
+        this.body.createFixture(fixtureDef).setUserData(ObjectName.PLAYER_TOP);
 
         polygonShape.dispose();
     }
 
     public void throwFireball() {
 
-    }
-
-    public void growUp() {
-        setState(State.BIG);
     }
 
     public void takeDamage() {
@@ -133,5 +132,11 @@ public class Player extends Entity{
 
     public void giveDamage(Entity entity) {
 
+    }
+
+    public void checkStateChange(State stateToCheck) {
+        if (this.getState() != stateToCheck) {
+            this.setState(stateToCheck);
+        }
     }
 }

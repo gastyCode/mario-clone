@@ -1,0 +1,48 @@
+
+items.png
+size: 128, 16
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+coin0
+  rotate: false
+  xy: 0, 0
+  size: 14, 16
+  orig: 14, 16
+  offset: 0, 0
+  index: -1
+coin1
+  rotate: false
+  xy: 16, 0
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+coin2
+  rotate: false
+  xy: 32, 0
+  size: 15, 16
+  orig: 15, 16
+  offset: 0, 0
+  index: -1
+coin3
+  rotate: false
+  xy: 48, 0
+  size: 10, 16
+  orig: 10, 16
+  offset: 0, 0
+  index: -1
+flower
+  rotate: false
+  xy: 64, 0
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+mushroom
+  rotate: false
+  xy: 80, 0
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1

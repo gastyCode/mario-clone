@@ -19,4 +19,7 @@ public class Constants {
     public static final float PLAYER_JUMP_FORCE = 1f;
     public static final float PLAYER_MAX_FORCE = 2f;
     public static final float PLAYER_DENSITY = 0f;
+
+    public static final float MUSHROOM_SPEED = 0.05f;
+    public static final float MUSHROOM_MAX_FORCE = 0.7f;
 }

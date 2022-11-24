@@ -1,22 +1,17 @@
-package com.cockatielstudios.gameObjects.entities;
+package com.cockatielstudios.gameObjects.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.cockatielstudios.gameObjects.GameObject;
 import com.cockatielstudios.screens.GameScreen;
 import com.cockatielstudios.utils.ObjectName;
 
-public class Goomba extends Entity {
-    public Goomba(GameScreen screen, Vector2 position, float width, float height) {
+public class Pipe extends GameObject {
+    public Pipe(GameScreen screen, Vector2 position, float width, float height) {
         super(screen, position, width, height);
         this.createBody(this.getPosition());
-    }
-
-    @Override
-    public void dispose() {
-
     }
 
     @Override
@@ -30,31 +25,21 @@ public class Goomba extends Entity {
     }
 
     @Override
-    public void movement() {
-
-    }
-
-    @Override
-    public void animate() {
+    public void dispose() {
 
     }
 
     private void createBody(Vector2 position) {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.x = position.x;
         bodyDef.position.y = position.y;
 
         PolygonShape polygonShape = new PolygonShape();
-        polygonShape.setAsBox(this.getWidth() / 2f, this.getHeight() / 2f);
-
-        // Create Goomba body
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = polygonShape;
-        fixtureDef.density = 0f;
-        this.body.createFixture(fixtureDef).setUserData(ObjectName.GOOMBA);
+        polygonShape.setAsBox(this.getWidth() / 2, this.getHeight() / 2, new Vector2(getWidth() / 2, getHeight() / 2), 0f);
 
         this.body = this.getWorld().createBody(bodyDef);
+        this.body.createFixture(polygonShape, 0f).setUserData(ObjectName.PIPE);
 
         polygonShape.dispose();
     }
