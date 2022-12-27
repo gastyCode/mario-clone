@@ -32,10 +32,9 @@ public class Player extends Entity{
     private Texture test;
 
     public Player(GameScreen screen, Vector2 position, float width, float height) {
-        super(screen, position, width, height);
-        this.setState(State.SMALL);
+        super(screen, position, width, height, State.DEFAULT);
         this.createBody(this.getPosition());
-
+        this.setState(State.SMALL);
         this.canJump = false;
 
         this.test = Assets.manager.get(Assets.player);
@@ -56,7 +55,7 @@ public class Player extends Entity{
             this.destroy();
         }
 
-        this.setCornerPosition(this.body.getPosition());
+        this.setCornerPosition(this.getBody().getPosition());
     }
 
     @Override
@@ -66,17 +65,17 @@ public class Player extends Entity{
 
     @Override
     public void movement() {
-        if (Gdx.input.isKeyPressed(Input.Keys.D) && this.body.getLinearVelocity().x <= PLAYER_MAX_FORCE) {
-            this.body.applyLinearImpulse(new Vector2(PLAYER_SPEED, 0), this.body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.D) && this.getBody().getLinearVelocity().x <= PLAYER_MAX_FORCE) {
+            this.getBody().applyLinearImpulse(new Vector2(PLAYER_SPEED, 0), this.getBody().getWorldCenter(), true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.A) && this.body.getLinearVelocity().x >= -PLAYER_MAX_FORCE) {
-            this.body.applyLinearImpulse(new Vector2(-PLAYER_SPEED, 0), this.body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.A) && this.getBody().getLinearVelocity().x >= -PLAYER_MAX_FORCE) {
+            this.getBody().applyLinearImpulse(new Vector2(-PLAYER_SPEED, 0), this.getBody().getWorldCenter(), true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W) && this.canJump) {
-            this.body.applyLinearImpulse(new Vector2(0f, PLAYER_JUMP_FORCE), this.body.getWorldCenter(), true);
+            this.getBody().applyLinearImpulse(new Vector2(0f, PLAYER_JUMP_FORCE), this.getBody().getWorldCenter(), true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-
+            System.out.println(this.getState());
         }
     }
 
@@ -94,26 +93,26 @@ public class Player extends Entity{
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.setAsBox(this.getWidth() / 3, this.getHeight() / 2f - 0.01f, new Vector2(0, 0), 0f);
 
-        this.body = this.getWorld().createBody(bodyDef);
+        this.setBody(this.getWorld().createBody(bodyDef));
 
         // Create player body
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = polygonShape;
         fixtureDef.density = PLAYER_DENSITY;
         fixtureDef.friction = 1.2f;
-        this.body.createFixture(fixtureDef).setUserData(ObjectName.PLAYER);
+        this.getBody().createFixture(fixtureDef).setUserData(ObjectName.PLAYER);
 
         // Create player bottom sensor
         polygonShape.setAsBox(this.getWidth() / 10, this.getHeight() / 100, new Vector2(0, -this.getHeight() / 2), 0f);
         fixtureDef.shape = polygonShape;
         fixtureDef.isSensor = true;
-        this.body.createFixture(fixtureDef).setUserData(ObjectName.PLAYER_BOTTOM);
+        this.getBody().createFixture(fixtureDef).setUserData(ObjectName.PLAYER_BOTTOM);
 
         // Create player top sensor
         polygonShape.setAsBox(this.getWidth() / 10, this.getHeight() / 100, new Vector2(0, this.getHeight() / 1.8f), 0f);
         fixtureDef.shape = polygonShape;
         fixtureDef.isSensor = true;
-        this.body.createFixture(fixtureDef).setUserData(ObjectName.PLAYER_TOP);
+        this.getBody().createFixture(fixtureDef).setUserData(ObjectName.PLAYER_TOP);
 
         polygonShape.dispose();
     }
@@ -135,7 +134,7 @@ public class Player extends Entity{
     }
 
     public void checkStateChange(State stateToCheck) {
-        if (this.getState() != stateToCheck) {
+        if (this.getState() != stateToCheck && this.getState() == null) {
             this.setState(stateToCheck);
         }
     }

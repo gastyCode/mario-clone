@@ -21,62 +21,35 @@ import com.cockatielstudios.gameObjects.tiles.MysteryBlock;
 import com.cockatielstudios.gameObjects.tiles.Pipe;
 import com.cockatielstudios.screens.GameScreen;
 
-import java.util.ArrayList;
-
 import static com.cockatielstudios.Constants.*;
 
 public class MapParser {
     private GameScreen screen;
+    private ObjectsManager objectsManager;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     private Body fallSensorBody;
 
-    private ArrayList<Block> blocks;
-    private ArrayList<MysteryBlock> mysteryBlocks;
-    private ArrayList<Mushroom> mushrooms;
 
-    public MapParser(TiledMap map, GameScreen screen) {
+
+    public MapParser(TiledMap map, ObjectsManager objectsManager, GameScreen screen) {
         this.screen = screen;
+        this.objectsManager = objectsManager;
         this.map = map;
         this.renderer = new OrthogonalTiledMapRenderer(this.map, 1 / PPM);
         this.createFallSensor(new Vector2(0f, -FALL_SENSOR_HEIGHT), WORLD_WIDTH, FALL_SENSOR_HEIGHT);
-
-        this.blocks = new ArrayList<Block>();
-        this.mysteryBlocks = new ArrayList<MysteryBlock>();
-
-        this.mushrooms = new ArrayList<Mushroom>();
-        this.mushrooms.add(new Mushroom(this.screen, new Vector2(32f, 32f), 16, 16, 1));
-
     }
 
     private World getWorld() {
-        return this.screen.world;
-    }
-
-    private CollisionListener getCollisions() {
-        return this.screen.collisionListener;
-    }
-
-    public void render(SpriteBatch spriteBatch) {
-        this.renderer.render();
-
-        for (Block block : this.blocks) {
-            block.render(spriteBatch);
-        }
-
-        for (MysteryBlock mysteryBlock : this.mysteryBlocks) {
-            mysteryBlock.render(spriteBatch);
-        }
-
-        for (Mushroom mushroom : this.mushrooms) {
-            mushroom.render(spriteBatch);
-            mushroom.update(0f);
-        }
+        return this.screen.getWorld();
     }
 
     public void update(OrthographicCamera camera) {
         this.renderer.setView(camera);
-        this.checkObjects();
+    }
+
+    public void render() {
+        this.renderer.render();
     }
 
     public void parseObjects() {
@@ -107,7 +80,7 @@ public class MapParser {
                 Vector2 position = new Vector2(rect.getX(), rect.getY());
                 MapProperties props = block.getProperties();
 
-                this.blocks.add(new Block(this.screen, position, rect.getWidth(), rect.getHeight(), props.get("id", Integer.class)));
+                this.objectsManager.addBlock(new Block(this.screen, position, rect.getWidth(), rect.getHeight(), props.get("id", Integer.class)));
             }
         }
         for (MapObject mysteryBlock : mysteryBlockObjects) {
@@ -116,29 +89,7 @@ public class MapParser {
                 Vector2 position = new Vector2(rect.getX(), rect.getY());
                 MapProperties props = mysteryBlock.getProperties();
 
-                this.mysteryBlocks.add(new MysteryBlock(this.screen, position, rect.getWidth(), rect.getHeight(), props.get("id", Integer.class)));
-            }
-        }
-    }
-
-    private void checkObjects() {
-        if (this.screen.player.getState() != State.SMALL) {
-            for (Block block : this.blocks) {
-                if (block.getID() == this.getCollisions().getCollidedBlockID()) {
-                    block.onCollision();
-                }
-            }
-        }
-
-        for (MysteryBlock mysteryBlock : this.mysteryBlocks) {
-            if (mysteryBlock.getID() == this.getCollisions().getCollidedMysteryBlockID()) {
-                mysteryBlock.onCollision();
-            }
-        }
-
-        for (Mushroom mushroom : this.mushrooms) {
-            if (mushroom.getID() == this.getCollisions().getCollidedMushroomID()) {
-                mushroom.onCollision();
+                this.objectsManager.addMysteryBlock(new MysteryBlock(this.screen, position, rect.getWidth(), rect.getHeight(), props.get("id", Integer.class)));
             }
         }
     }

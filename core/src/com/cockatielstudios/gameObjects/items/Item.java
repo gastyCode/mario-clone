@@ -17,9 +17,10 @@ public abstract class Item extends GameObject {
     private State stateChange;
     private int id;
 
-    public Item(GameScreen screen, Vector2 position, float width, float height, int id) {
+    public Item(GameScreen screen, Vector2 position, float width, float height, State stateChange, int id) {
         super(screen, position, width, height);
         this.textureAtlas = Assets.manager.get(Assets.items);
+        this.stateChange = stateChange;
         this.id = id;
     }
 
@@ -35,10 +36,6 @@ public abstract class Item extends GameObject {
         return stateChange;
     }
 
-    public void setStateChange(State stateChange) {
-        this.stateChange = stateChange;
-    }
-
     protected <T> void createBody(Vector2 position, T object) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -52,8 +49,8 @@ public abstract class Item extends GameObject {
         fixtureDef.shape = polygonShape;
         fixtureDef.density = 0f;
 
-        this.body = this.getWorld().createBody(bodyDef);
-        this.body.createFixture(fixtureDef).setUserData(object);
+        this.setBody(this.getWorld().createBody(bodyDef));
+        this.getBody().createFixture(fixtureDef).setUserData(object);
 
         polygonShape.dispose();
     }

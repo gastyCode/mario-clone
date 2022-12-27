@@ -13,8 +13,7 @@ public abstract class GameObject {
     private Vector2 position;
     private float width;
     private float height;
-
-    public Body body;
+    private Body body;
 
     public GameObject(GameScreen screen, Vector2 position, float width, float height) {
         this.screen = screen;
@@ -35,8 +34,12 @@ public abstract class GameObject {
         return screen;
     }
 
+    public Body getBody() {
+        return body;
+    }
+
     public World getWorld() {
-        return this.screen.world;
+        return this.getScreen().getWorld();
     }
 
     public Vector2 getPosition() {
@@ -44,7 +47,11 @@ public abstract class GameObject {
     }
 
     public CollisionListener getCollisions() {
-        return screen.collisionListener;
+        return screen.getCollisionListener();
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
     }
 
     public void setCornerPosition(Vector2 position) {

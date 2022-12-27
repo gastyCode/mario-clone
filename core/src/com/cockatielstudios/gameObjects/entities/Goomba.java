@@ -7,10 +7,11 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.cockatielstudios.screens.GameScreen;
 import com.cockatielstudios.utils.ObjectName;
+import com.cockatielstudios.utils.State;
 
 public class Goomba extends Entity {
     public Goomba(GameScreen screen, Vector2 position, float width, float height) {
-        super(screen, position, width, height);
+        super(screen, position, width, height, State.DEFAULT);
         this.createBody(this.getPosition());
     }
 
@@ -52,9 +53,9 @@ public class Goomba extends Entity {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = polygonShape;
         fixtureDef.density = 0f;
-        this.body.createFixture(fixtureDef).setUserData(ObjectName.GOOMBA);
+        this.getBody().createFixture(fixtureDef).setUserData(ObjectName.GOOMBA);
 
-        this.body = this.getWorld().createBody(bodyDef);
+        this.setBody(this.getWorld().createBody(bodyDef));
 
         polygonShape.dispose();
     }

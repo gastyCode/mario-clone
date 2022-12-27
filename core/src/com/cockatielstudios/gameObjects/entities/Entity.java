@@ -9,12 +9,13 @@ import com.cockatielstudios.screens.GameScreen;
 public abstract class Entity extends GameObject {
     private State state;
 
-    public Entity(GameScreen screen, Vector2 position, float width, float height) {
+    public Entity(GameScreen screen, Vector2 position, float width, float height, State state) {
         super(screen, position, width, height);
+        this.state = state;
     }
 
     public State getState() {
-        return state;
+        return this.state;
     }
 
     public void setState(State state) {

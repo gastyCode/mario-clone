@@ -12,9 +12,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.cockatielstudios.Assets;
 import com.cockatielstudios.MainGame;
 import com.cockatielstudios.gameObjects.entities.Player;
-import com.cockatielstudios.utils.CameraManager;
-import com.cockatielstudios.utils.CollisionListener;
-import com.cockatielstudios.utils.MapParser;
+import com.cockatielstudios.utils.*;
 
 import static com.cockatielstudios.Constants.*;
 
@@ -25,13 +23,14 @@ public class GameScreen implements Screen {
     private Viewport viewport;
     private CameraManager cameraManager;
 
+    private ObjectsManager objectsManager;
     private MapParser mapParser;
 
-    public World world;
-    public CollisionListener collisionListener;
-    public Box2DDebugRenderer b2Debug;
+    private World world;
+    private CollisionListener collisionListener;
+    private Box2DDebugRenderer b2Debug;
 
-    public Player player;
+    private Player player;
 
     public GameScreen(MainGame game) {
         this.game = game;
@@ -45,11 +44,28 @@ public class GameScreen implements Screen {
         this.world.setContactListener(this.collisionListener);
         this.b2Debug = new Box2DDebugRenderer(true, true, true, true, true, true);
 
-        this.mapParser = new MapParser(Assets.manager.get(Assets.map), this);
+        this.objectsManager = new ObjectsManager(this);
+        this.mapParser = new MapParser(Assets.manager.get(Assets.map), this.objectsManager, this);
         this.mapParser.parseObjects();
 
         this.player = new Player(this, new Vector2(10f, 50f), 16, 32);
         this.cameraManager = new CameraManager(this.camera, this.player);
+    }
+
+    public World getWorld() {
+        return this.world;
+    }
+
+    public CollisionListener getCollisionListener() {
+        return this.collisionListener;
+    }
+
+    public State getPlayerState() {
+        return this.player.getState();
+    }
+
+    public ObjectsManager getObjectsManager() {
+        return this.objectsManager;
     }
 
     public void update(float delta) {
@@ -57,6 +73,7 @@ public class GameScreen implements Screen {
 
         this.cameraManager.update();
         this.mapParser.update(this.camera);
+        this.objectsManager.update();
 
         this.player.update(delta);
     }
@@ -73,7 +90,8 @@ public class GameScreen implements Screen {
 
         this.game.spriteBatch.setProjectionMatrix(this.camera.combined);
         this.game.spriteBatch.begin();
-        this.mapParser.render(this.game.spriteBatch);
+        this.mapParser.render();
+        this.objectsManager.render(this.game.spriteBatch);
         this.player.render(this.game.spriteBatch);
         this.game.spriteBatch.end();
 

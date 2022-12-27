@@ -22,4 +22,7 @@ public class Constants {
 
     public static final float MUSHROOM_SPEED = 0.05f;
     public static final float MUSHROOM_MAX_FORCE = 0.7f;
+
+    public static final float ITEM_WIDTH = 16f;
+    public static final float ITEM_HEIGHT = 16f;
 }

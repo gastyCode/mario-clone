@@ -38,8 +38,8 @@ public class Ground extends GameObject {
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.setAsBox(this.getWidth() / 2, this.getHeight() / 2, new Vector2(getWidth() / 2, getHeight() / 2), 0f);
 
-        this.body = this.getWorld().createBody(bodyDef);
-        this.body.createFixture(polygonShape, 0f).setUserData(ObjectName.GROUND);
+        this.setBody(this.getWorld().createBody(bodyDef));
+        this.getBody().createFixture(polygonShape, 0f).setUserData(ObjectName.GROUND);
 
         polygonShape.dispose();
     }

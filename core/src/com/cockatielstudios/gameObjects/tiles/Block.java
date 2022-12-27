@@ -22,7 +22,7 @@ public class Block extends DestroyableBlock {
 
     @Override
     public void onCollision() {
-        this.body.setActive(false);
+        this.getBody().setActive(false);
         this.setDestroyedTile(Assets.manager.get(Assets.emptyTile));
     }
 }

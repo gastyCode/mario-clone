@@ -1,12 +1,9 @@
 package com.cockatielstudios.utils;
 
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.DelayedRemovalArray;
-import com.cockatielstudios.gameObjects.items.Item;
 import com.cockatielstudios.gameObjects.items.Mushroom;
 import com.cockatielstudios.gameObjects.tiles.Block;
 import com.cockatielstudios.gameObjects.tiles.MysteryBlock;
-import com.cockatielstudios.utils.ObjectName;
 
 public class CollisionListener implements ContactListener {
     private boolean playerGrounded;
@@ -74,6 +71,7 @@ public class CollisionListener implements ContactListener {
             assert mysteryBlock != null;
             this.collidedMysteryBlockID = mysteryBlock.getID();
         }
+
         if ((fixtureA.getUserData() == ObjectName.PLAYER_BOTTOM || fixtureA.getUserData() == ObjectName.PLAYER_BOTTOM) &&
                 (fixtureA.getUserData() == ObjectName.FALL_DETECTOR || fixtureA.getUserData() == ObjectName.FALL_DETECTOR)) {
             this.playerFellOut = true;
@@ -92,18 +90,18 @@ public class CollisionListener implements ContactListener {
             mushroom.switchDirection();
         }
 
-        if ((fixtureA.getUserData() instanceof Item || fixtureB.getUserData() instanceof Item) &&
+        if ((fixtureA.getUserData() instanceof Mushroom || fixtureB.getUserData() instanceof Mushroom) &&
                 (fixtureA.getUserData() == ObjectName.PLAYER || fixtureB.getUserData() == ObjectName.PLAYER)) {
 
-            Item item = null;
+            Mushroom mushroom = null;
             if (fixtureA.getUserData() instanceof Mushroom) {
-                item = (Item) fixtureA.getUserData();
+                mushroom = (Mushroom) fixtureA.getUserData();
             } else if (fixtureB.getUserData() instanceof Mushroom) {
-                item = (Item) fixtureB.getUserData();
+                mushroom = (Mushroom) fixtureB.getUserData();
             }
-            assert item != null;
-            this.collidedMushroomID = item.getID();
-            this.stateChange = item.getStateChange();
+            assert mushroom != null;
+            this.collidedMushroomID = mushroom.getID();
+            this.stateChange = mushroom.getStateChange();
         }
     }
 
