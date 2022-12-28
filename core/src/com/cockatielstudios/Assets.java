@@ -16,12 +16,14 @@ public class Assets {
     public static final AssetDescriptor<Texture> emptyBlock = new AssetDescriptor<Texture>("sprites/empty_block.png", Texture.class);
     public static final AssetDescriptor<Texture> emptyTile = new AssetDescriptor<Texture>("sprites/empty_tile.png", Texture.class);
     public static final AssetDescriptor<TextureAtlas> items = new AssetDescriptor<>("sprites/items.atlas", TextureAtlas.class);
+    public static final AssetDescriptor<Texture> goomba = new AssetDescriptor<Texture>("sprites/goomba.png", Texture.class);
 
     public static void load() {
         manager.load(player);
         manager.load(emptyBlock);
         manager.load(emptyTile);
         manager.load(items);
+        manager.load(goomba);
 
         manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
         manager.load(map);

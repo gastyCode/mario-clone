@@ -1,7 +1,5 @@
 package com.cockatielstudios;
 
-import com.badlogic.gdx.math.Vector2;
-
 public class Constants {
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
@@ -23,6 +21,11 @@ public class Constants {
     public static final float MUSHROOM_SPEED = 0.05f;
     public static final float MUSHROOM_MAX_FORCE = 0.7f;
 
+    public static final float GOOMBA_SPEED = 0.05f;
+    public static final float GOOMBA_MAX_FORCE = 0.7f;
+
     public static final float ITEM_WIDTH = 16f;
     public static final float ITEM_HEIGHT = 16f;
+
+    public static final float BODY_RECREATE_TIME = 3f;
 }

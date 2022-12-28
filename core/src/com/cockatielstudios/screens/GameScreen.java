@@ -91,7 +91,7 @@ public class GameScreen implements Screen {
         this.game.spriteBatch.setProjectionMatrix(this.camera.combined);
         this.game.spriteBatch.begin();
         this.mapParser.render();
-        this.objectsManager.render(this.game.spriteBatch);
+        this.objectsManager.render(this.game.spriteBatch, delta);
         this.player.render(this.game.spriteBatch);
         this.game.spriteBatch.end();
 

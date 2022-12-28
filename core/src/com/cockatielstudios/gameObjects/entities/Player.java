@@ -13,6 +13,7 @@ import com.cockatielstudios.Assets;
 import com.cockatielstudios.utils.ObjectName;
 import com.cockatielstudios.utils.State;
 import com.cockatielstudios.screens.GameScreen;
+import com.sun.org.apache.xalan.internal.xsltc.dom.NthIterator;
 
 import static com.cockatielstudios.Constants.*;
 
@@ -28,6 +29,8 @@ public class Player extends Entity{
     private ArrayList<Fireball> fireballs;
 
     private boolean canJump;
+    private boolean bodyExists;
+    private boolean isMovableToLeft;
 
     private Texture test;
 
@@ -36,8 +39,14 @@ public class Player extends Entity{
         this.createBody(this.getPosition());
         this.setState(State.SMALL);
         this.canJump = false;
+        this.bodyExists = true;
+        this.isMovableToLeft = true;
 
         this.test = Assets.manager.get(Assets.player);
+    }
+
+    public void setMovableToLeft(boolean movableToLeft) {
+        isMovableToLeft = movableToLeft;
     }
 
     @Override
@@ -47,12 +56,13 @@ public class Player extends Entity{
 
     @Override
     public void update(float delta) {
+        this.recreateBody();
         this.movement();
         this.canJump = this.getCollisions().isPlayerGrounded();
         this.checkStateChange(this.getCollisions().getStateChange());
 
         if (this.getCollisions().isPlayerFellOut()) {
-            this.destroy();
+            this.dispose();
         }
 
         this.setCornerPosition(this.getBody().getPosition());
@@ -68,14 +78,14 @@ public class Player extends Entity{
         if (Gdx.input.isKeyPressed(Input.Keys.D) && this.getBody().getLinearVelocity().x <= PLAYER_MAX_FORCE) {
             this.getBody().applyLinearImpulse(new Vector2(PLAYER_SPEED, 0), this.getBody().getWorldCenter(), true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.A) && this.getBody().getLinearVelocity().x >= -PLAYER_MAX_FORCE) {
+        if (Gdx.input.isKeyPressed(Input.Keys.A) && this.getBody().getLinearVelocity().x >= -PLAYER_MAX_FORCE && this.isMovableToLeft) {
             this.getBody().applyLinearImpulse(new Vector2(-PLAYER_SPEED, 0), this.getBody().getWorldCenter(), true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W) && this.canJump) {
             this.getBody().applyLinearImpulse(new Vector2(0f, PLAYER_JUMP_FORCE), this.getBody().getWorldCenter(), true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            System.out.println(this.getState());
+            
         }
     }
 
@@ -100,7 +110,7 @@ public class Player extends Entity{
         fixtureDef.shape = polygonShape;
         fixtureDef.density = PLAYER_DENSITY;
         fixtureDef.friction = 1.2f;
-        this.getBody().createFixture(fixtureDef).setUserData(ObjectName.PLAYER);
+        this.getBody().createFixture(fixtureDef).setUserData(this);
 
         // Create player bottom sensor
         polygonShape.setAsBox(this.getWidth() / 10, this.getHeight() / 100, new Vector2(0, -this.getHeight() / 2), 0f);
@@ -122,19 +132,32 @@ public class Player extends Entity{
     }
 
     public void takeDamage() {
-
+        if (this.bodyExists) {
+            switch (this.getState()) {
+                case FLOWER:
+                    this.setState(State.BIG);
+                    break;
+                case BIG:
+                    this.setState(State.SMALL);
+                    break;
+                case SMALL:
+                    this.dispose();
+                    break;
+            }
+            this.bodyExists = false;
+        }
     }
 
-    public void destroy() {
-        this.dispose();
+    private void recreateBody() {
+        if (!this.getWorld().isLocked() && !this.bodyExists) {
+            this.bodyExists = true;
+            this.getWorld().destroyBody(this.getBody());
+            this.createBody(this.getPosition());
+        }
     }
 
-    public void giveDamage(Entity entity) {
-
-    }
-
-    public void checkStateChange(State stateToCheck) {
-        if (this.getState() != stateToCheck && this.getState() == null) {
+    private void checkStateChange(State stateToCheck) {
+        if (this.getState() != stateToCheck && stateToCheck != null) {
             this.setState(stateToCheck);
         }
     }

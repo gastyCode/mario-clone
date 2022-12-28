@@ -4,9 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
 import com.cockatielstudios.gameObjects.entities.Player;
-import com.cockatielstudios.screens.GameScreen;
 
 import static com.cockatielstudios.Constants.*;
 
@@ -38,6 +36,12 @@ public class CameraManager {
     }
 
     private void checkPlayerOnScreen() {
-
+        float screenCorner = this.camera.position.x - (WORLD_WIDTH / PPM) / 2;
+        if (this.player.getPosition().x <= screenCorner && this.player.getBody().getLinearVelocity().x <= 0f) {
+            this.player.getBody().setLinearVelocity(0f, this.player.getBody().getLinearVelocity().y);
+            this.player.setMovableToLeft(false);
+        } else {
+            this.player.setMovableToLeft(true);
+        }
     }
 }
