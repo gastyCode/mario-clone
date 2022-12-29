@@ -22,6 +22,7 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private Viewport viewport;
     private CameraManager cameraManager;
+    private Hud hud;
 
     private ObjectsManager objectsManager;
     private MapParser mapParser;
@@ -36,11 +37,12 @@ public class GameScreen implements Screen {
         this.game = game;
         this.camera = new OrthographicCamera();
         this.viewport = new StretchViewport(WORLD_WIDTH / PPM, WORLD_HEIGHT / PPM, this.camera);
+        this.hud = new Hud(this.game.spriteBatch);
 
         this.camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
         this.world = new World(new Vector2(0f, GRAVITY), false);
-        this.collisionListener = new CollisionListener();
+        this.collisionListener = new CollisionListener(this, this.hud);
         this.world.setContactListener(this.collisionListener);
         this.b2Debug = new Box2DDebugRenderer(true, true, true, true, true, true);
 
@@ -68,12 +70,17 @@ public class GameScreen implements Screen {
         return this.objectsManager;
     }
 
+    public Hud getHud() {
+        return hud;
+    }
+
     public void update(float delta) {
         this.world.step(1/60f, 6, 2);
 
         this.cameraManager.update();
         this.mapParser.update(this.camera);
         this.objectsManager.update();
+        this.hud.update(delta);
 
         this.player.update(delta);
     }
@@ -88,12 +95,14 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
 
-        this.game.spriteBatch.setProjectionMatrix(this.camera.combined);
         this.game.spriteBatch.begin();
         this.mapParser.render();
         this.objectsManager.render(this.game.spriteBatch, delta);
         this.player.render(this.game.spriteBatch);
         this.game.spriteBatch.end();
+
+        this.game.spriteBatch.setProjectionMatrix(this.hud.getStage().getCamera().combined);
+        this.hud.getStage().draw();
 
         this.b2Debug.render(this.world, this.camera.combined);
     }

@@ -7,8 +7,16 @@ import com.cockatielstudios.gameObjects.items.Flower;
 import com.cockatielstudios.gameObjects.items.Mushroom;
 import com.cockatielstudios.gameObjects.tiles.Block;
 import com.cockatielstudios.gameObjects.tiles.MysteryBlock;
+import com.cockatielstudios.screens.GameScreen;
+import com.cockatielstudios.screens.Hud;
+import com.sun.org.apache.xalan.internal.xsltc.dom.NthIterator;
+
+import static com.cockatielstudios.Constants.*;
 
 public class CollisionListener implements ContactListener {
+    private GameScreen screen;
+    private Hud hud;
+
     private boolean playerGrounded;
     private boolean playerFellOut;
     private int collidedBlockID;
@@ -16,6 +24,11 @@ public class CollisionListener implements ContactListener {
     private int collidedMushroomID;
     private int collidedFlowerID;
     private State stateChange;
+
+    public CollisionListener(GameScreen screen, Hud hud) {
+        this.screen = screen;
+        this.hud = hud;
+    }
 
     public boolean isPlayerGrounded() {
         return playerGrounded;
@@ -57,13 +70,16 @@ public class CollisionListener implements ContactListener {
         if (fixtureA.getUserData() == ObjectName.PLAYER_TOP || fixtureB.getUserData() == ObjectName.PLAYER_TOP &&
                 fixtureA.getUserData() instanceof Block || fixtureB.getUserData() instanceof Block) {
 
-            Block block;
-            if (fixtureA.getUserData() instanceof Block) {
-                block = (Block) fixtureA.getUserData();
-            } else {
-                block = (Block) fixtureB.getUserData();
+            if (this.screen.getPlayerState() != State.SMALL) {
+                Block block;
+                if (fixtureA.getUserData() instanceof Block) {
+                    block = (Block) fixtureA.getUserData();
+                } else {
+                    block = (Block) fixtureB.getUserData();
+                }
+                this.collidedBlockID = block.getID();
+                this.hud.addScore(BREAK_SCORE);
             }
-            this.collidedBlockID = block.getID();
         }
 
         if ((fixtureA.getUserData() == ObjectName.PLAYER_TOP || fixtureB.getUserData() == ObjectName.PLAYER_TOP) &&
@@ -118,6 +134,7 @@ public class CollisionListener implements ContactListener {
             }
             this.collidedMushroomID = mushroom.getID();
             this.stateChange = mushroom.getStateChange();
+            this.hud.addScore(POWER_UP_SCORE);
         }
 
         if ((fixtureA.getUserData() instanceof Flower || fixtureB.getUserData() instanceof Flower) &&
@@ -131,6 +148,7 @@ public class CollisionListener implements ContactListener {
             }
             this.collidedFlowerID = flower.getID();
             this.stateChange = flower.getStateChange();
+            this.hud.addScore(POWER_UP_SCORE);
         }
 
         if ((fixtureA.getUserData() instanceof Goomba || fixtureB.getUserData() instanceof Goomba) &&
@@ -147,6 +165,18 @@ public class CollisionListener implements ContactListener {
             }
             goomba.switchDirection();
             player.takeDamage();
+        }
+
+        if ((fixtureA.getUserData() instanceof Goomba || fixtureB.getUserData() instanceof Goomba) &&
+                (fixtureA.getUserData() == ObjectName.PLAYER_BOTTOM || fixtureB.getUserData() == ObjectName.PLAYER_BOTTOM)) {
+
+            Goomba goomba;
+            if (fixtureA.getUserData() instanceof Goomba) {
+                goomba = (Goomba) fixtureA.getUserData();
+            } else {
+                goomba = (Goomba) fixtureB.getUserData();
+            }
+            goomba.switchDirection();
         }
     }
 

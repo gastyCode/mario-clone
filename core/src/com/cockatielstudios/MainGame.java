@@ -3,7 +3,6 @@ package com.cockatielstudios;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Box2D;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.cockatielstudios.screens.GameScreen;
 
 public class MainGame extends Game {
@@ -16,6 +15,7 @@ public class MainGame extends Game {
 		Box2D.init();
 
 		spriteBatch = new SpriteBatch();
+//		setScreen(new MenuScreen(this));
 		setScreen(new GameScreen(this));
 	}
 

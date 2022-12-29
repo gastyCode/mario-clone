@@ -28,4 +28,11 @@ public class Constants {
     public static final float ITEM_HEIGHT = 16f;
 
     public static final float BODY_RECREATE_TIME = 3f;
+
+    public static final int BREAK_SCORE = 50;
+    public static final int COIN_SCORE = 200;
+    public static final int POWER_UP_SCORE = 1000;
+
+    public static final float COIN_LIFESPAN = 0.2f;
+
 }

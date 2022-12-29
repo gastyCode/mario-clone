@@ -85,7 +85,7 @@ public class Player extends Entity{
             this.getBody().applyLinearImpulse(new Vector2(0f, PLAYER_JUMP_FORCE), this.getBody().getWorldCenter(), true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            
+
         }
     }
 

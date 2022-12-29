@@ -2,14 +2,14 @@ package com.cockatielstudios.utils;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.cockatielstudios.gameObjects.GameObject;
 import com.cockatielstudios.gameObjects.entities.Goomba;
+import com.cockatielstudios.gameObjects.items.Coin;
 import com.cockatielstudios.gameObjects.items.Flower;
-import com.cockatielstudios.gameObjects.items.Item;
 import com.cockatielstudios.gameObjects.items.Mushroom;
 import com.cockatielstudios.gameObjects.tiles.Block;
 import com.cockatielstudios.gameObjects.tiles.MysteryBlock;
 import com.cockatielstudios.screens.GameScreen;
+import static com.cockatielstudios.Constants.*;
 
 import java.util.ArrayList;
 
@@ -20,6 +20,8 @@ public class ObjectsManager {
     private ArrayList<MysteryBlock> mysteryBlocks;
     private ArrayList<Mushroom> mushrooms;
     private ArrayList<Flower> flowers;
+    private ArrayList<Goomba> goombas;
+    private ArrayList<Coin> coins;
 
     private int availableID;
     private Goomba goomba;
@@ -33,6 +35,8 @@ public class ObjectsManager {
 
         this.mushrooms = new ArrayList<Mushroom>();
         this.flowers = new ArrayList<Flower>();
+        this.goombas = new ArrayList<Goomba>();
+        this.coins = new ArrayList<Coin>();
 
         this.goomba = new Goomba(this.screen, new Vector2(32, 32), 16, 16);
     }
@@ -47,6 +51,7 @@ public class ObjectsManager {
     }
 
     public void update() {
+        this.removeObjects();
         this.checkObjects();
     }
 
@@ -68,6 +73,11 @@ public class ObjectsManager {
             flower.render(spriteBatch);
         }
 
+        for (Coin coin : this.coins) {
+            coin.render(spriteBatch);
+            coin.update(delta);
+        }
+
         this.goomba.render(spriteBatch);
         this.goomba.update(delta);
     }
@@ -86,7 +96,9 @@ public class ObjectsManager {
                 mysteryBlock.onCollision();
             }
         }
+    }
 
+    public void removeObjects() {
         // Remove mushroom
         int index = -1;
         for (int i = 0; i < this.mushrooms.size(); i++) {
@@ -99,7 +111,7 @@ public class ObjectsManager {
             this.mushrooms.remove(index);
         }
 
-        // Remove flowers
+        // Remove flower
         index = -1;
         for (int i = 0; i < this.flowers.size(); i++) {
             if (this.flowers.get(i).getID() == this.getCollisions().getCollidedFlowerID()) {
@@ -109,6 +121,16 @@ public class ObjectsManager {
         }
         if (index >= 0) {
             this.flowers.remove(index);
+        }
+
+        for (int i = 0; i < this.coins.size(); i++) {
+            if (this.coins.get(i).getDisposed()) {
+                index = i;
+                this.screen.getHud().addScore(COIN_SCORE);
+            }
+        }
+        if (index >= 0) {
+            this.coins.remove(index);
         }
     }
 
@@ -126,5 +148,9 @@ public class ObjectsManager {
 
     public void addFlower(Flower flower) {
         this.flowers.add(flower);
+    }
+
+    public void addCoin(Coin coin) {
+        this.coins.add(coin);
     }
 }

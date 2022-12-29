@@ -4,7 +4,11 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
@@ -17,6 +21,7 @@ public class Assets {
     public static final AssetDescriptor<Texture> emptyTile = new AssetDescriptor<Texture>("sprites/empty_tile.png", Texture.class);
     public static final AssetDescriptor<TextureAtlas> items = new AssetDescriptor<>("sprites/items.atlas", TextureAtlas.class);
     public static final AssetDescriptor<Texture> goomba = new AssetDescriptor<Texture>("sprites/goomba.png", Texture.class);
+    public static final AssetDescriptor<BitmapFont> arcadeclassic = new AssetDescriptor<BitmapFont>("fonts/arcadeclassic.fnt", BitmapFont.class);
 
     public static void load() {
         manager.load(player);
@@ -25,7 +30,12 @@ public class Assets {
         manager.load(items);
         manager.load(goomba);
 
-        manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
+        InternalFileHandleResolver resolver = new InternalFileHandleResolver();
+        manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+        manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
+        manager.load(arcadeclassic);
+
+        manager.setLoader(TiledMap.class, new TmxMapLoader(resolver));
         manager.load(map);
 
         manager.finishLoading();

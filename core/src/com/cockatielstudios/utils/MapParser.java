@@ -14,7 +14,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.cockatielstudios.gameObjects.items.Mushroom;
 import com.cockatielstudios.gameObjects.tiles.Block;
 import com.cockatielstudios.gameObjects.tiles.Ground;
 import com.cockatielstudios.gameObjects.tiles.MysteryBlock;
@@ -89,7 +88,7 @@ public class MapParser {
                 Vector2 position = new Vector2(rect.getX(), rect.getY());
                 MapProperties props = mysteryBlock.getProperties();
 
-                this.objectsManager.addMysteryBlock(new MysteryBlock(this.screen, position, rect.getWidth(), rect.getHeight(), props.get("id", Integer.class)));
+                this.objectsManager.addMysteryBlock(new MysteryBlock(this.screen, position, rect.getWidth(), rect.getHeight(), props.get("id", Integer.class), props.get("isSpecial", Boolean.class)));
             }
         }
     }
