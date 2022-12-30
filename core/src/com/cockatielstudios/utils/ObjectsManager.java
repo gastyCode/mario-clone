@@ -16,6 +16,8 @@ import java.util.ArrayList;
 public class ObjectsManager {
     private GameScreen screen;
 
+    private ArrayList<Vector2> goombasData;
+
     private ArrayList<Block> blocks;
     private ArrayList<MysteryBlock> mysteryBlocks;
     private ArrayList<Mushroom> mushrooms;
@@ -24,11 +26,12 @@ public class ObjectsManager {
     private ArrayList<Coin> coins;
 
     private int availableID;
-    private Goomba goomba;
 
     public ObjectsManager(GameScreen screen) {
         this.screen = screen;
         this.availableID = 0;
+
+        this.goombasData = new ArrayList<Vector2>();
 
         this.blocks = new ArrayList<Block>();
         this.mysteryBlocks = new ArrayList<MysteryBlock>();
@@ -37,8 +40,6 @@ public class ObjectsManager {
         this.flowers = new ArrayList<Flower>();
         this.goombas = new ArrayList<Goomba>();
         this.coins = new ArrayList<Coin>();
-
-        this.goomba = new Goomba(this.screen, new Vector2(32, 32), 16, 16);
     }
 
     public int getAvailableID() {
@@ -52,6 +53,7 @@ public class ObjectsManager {
 
     public void update() {
         this.removeObjects();
+        this.spawnEnemies();
         this.checkObjects();
     }
 
@@ -78,8 +80,10 @@ public class ObjectsManager {
             coin.update(delta);
         }
 
-        this.goomba.render(spriteBatch);
-        this.goomba.update(delta);
+        for (Goomba goomba : this.goombas) {
+            goomba.render(spriteBatch);
+            goomba.update(delta);
+        }
     }
 
     private void checkObjects() {
@@ -123,6 +127,7 @@ public class ObjectsManager {
             this.flowers.remove(index);
         }
 
+        // Remove coin
         for (int i = 0; i < this.coins.size(); i++) {
             if (this.coins.get(i).getDisposed()) {
                 index = i;
@@ -131,6 +136,28 @@ public class ObjectsManager {
         }
         if (index >= 0) {
             this.coins.remove(index);
+        }
+
+        // Remove goomba
+        index = -1;
+        for (int i = 0; i < this.goombas.size(); i++) {
+            if (this.goombas.get(i).getID() == this.getCollisions().getCollidedGoombaID()) {
+                this.goombas.get(i).dispose();
+                index = i;
+            }
+        }
+        if (index >= 0) {
+            this.goombas.remove(index);
+        }
+    }
+
+    public void spawnEnemies() {
+        for (int i = 0; i < this.goombasData.size(); i++) {
+            Vector2 position = this.goombasData.get(i);
+            if (position.x - ENEMY_SPAWN_DISTANCE > this.screen.getPlayerPosition().x) {
+                this.goombas.add(new Goomba(this.screen, position, ENEMY_WIDTH, ENEMY_HEIGHT, this.getAvailableID()));
+                this.goombasData.remove(i);
+            }
         }
     }
 
@@ -152,5 +179,9 @@ public class ObjectsManager {
 
     public void addCoin(Coin coin) {
         this.coins.add(coin);
+    }
+
+    public void addGoombaData(Vector2 position) {
+        this.goombasData.add(position);
     }
 }

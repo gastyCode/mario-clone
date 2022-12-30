@@ -66,6 +66,10 @@ public class GameScreen implements Screen {
         return this.player.getState();
     }
 
+    public Vector2 getPlayerPosition() {
+        return this.player.getPosition();
+    }
+
     public ObjectsManager getObjectsManager() {
         return this.objectsManager;
     }

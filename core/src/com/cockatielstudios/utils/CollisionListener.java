@@ -23,6 +23,7 @@ public class CollisionListener implements ContactListener {
     private int collidedMysteryBlockID;
     private int collidedMushroomID;
     private int collidedFlowerID;
+    private int collidedGoombaID;
     private State stateChange;
 
     public CollisionListener(GameScreen screen, Hud hud) {
@@ -48,6 +49,10 @@ public class CollisionListener implements ContactListener {
 
     public int getCollidedFlowerID() {
         return collidedFlowerID;
+    }
+
+    public int getCollidedGoombaID() {
+        return collidedGoombaID;
     }
 
     public boolean isPlayerFellOut() {
@@ -163,8 +168,10 @@ public class CollisionListener implements ContactListener {
                 goomba = (Goomba) fixtureB.getUserData();
                 player = (Player) fixtureA.getUserData();
             }
-            goomba.switchDirection();
-            player.takeDamage();
+            if (!goomba.getDisposed()) {
+                goomba.switchDirection();
+                player.takeDamage();
+            }
         }
 
         if ((fixtureA.getUserData() instanceof Goomba || fixtureB.getUserData() instanceof Goomba) &&
@@ -176,7 +183,8 @@ public class CollisionListener implements ContactListener {
             } else {
                 goomba = (Goomba) fixtureB.getUserData();
             }
-            goomba.switchDirection();
+            this.collidedGoombaID = goomba.getID();
+            this.hud.addScore(GOOMBA_SCORE);
         }
     }
 

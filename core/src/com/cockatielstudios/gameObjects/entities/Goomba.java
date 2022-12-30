@@ -8,25 +8,39 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.cockatielstudios.Assets;
 import com.cockatielstudios.screens.GameScreen;
-import com.cockatielstudios.utils.ObjectName;
 import com.cockatielstudios.utils.State;
 import static com.cockatielstudios.Constants.*;
 
 public class Goomba extends Entity {
     private float speed;
     private Texture test;
+    private boolean isDisposed;
+    private int id;
 
-    public Goomba(GameScreen screen, Vector2 position, float width, float height) {
+    public Goomba(GameScreen screen, Vector2 position, float width, float height, int id) {
         super(screen, position, width, height, State.DEFAULT);
         this.createBody(this.getPosition());
-        this.speed = GOOMBA_SPEED;
+        this.speed = -GOOMBA_SPEED;
+        this.isDisposed = false;
+        this.id = id;
 
         this.test = Assets.manager.get(Assets.goomba);
     }
 
+    public int getID() {
+        return id;
+    }
+
+    public boolean getDisposed() {
+        return this.isDisposed;
+    }
+
     @Override
     public void dispose() {
-
+        if (!this.isDisposed && !this.getWorld().isLocked()) {
+            this.isDisposed = true;
+            this.getWorld().destroyBody(this.getBody());
+        }
     }
 
     @Override

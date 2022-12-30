@@ -56,6 +56,7 @@ public class MapParser {
         MapObjects pipeObjects = this.map.getLayers().get("Pipes").getObjects();
         MapObjects blockObjects = this.map.getLayers().get("Blocks").getObjects();
         MapObjects mysteryBlockObjects = this.map.getLayers().get("MysteryBlocks").getObjects();
+        MapObjects goombaObjects = this.map.getLayers().get("Goombas").getObjects();
 
         for (MapObject groundBlock : groundObjects) {
             if (groundBlock instanceof RectangleMapObject) {
@@ -89,6 +90,15 @@ public class MapParser {
                 MapProperties props = mysteryBlock.getProperties();
 
                 this.objectsManager.addMysteryBlock(new MysteryBlock(this.screen, position, rect.getWidth(), rect.getHeight(), props.get("id", Integer.class), props.get("isSpecial", Boolean.class)));
+            }
+        }
+
+        for (MapObject goomba : goombaObjects) {
+            if (goomba instanceof RectangleMapObject) {
+                Rectangle rect = ((RectangleMapObject) goomba).getRectangle();
+                Vector2 position = new Vector2(rect.getX(), rect.getY());
+                
+                this.objectsManager.addGoombaData(position);
             }
         }
     }
