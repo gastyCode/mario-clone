@@ -1,6 +1,7 @@
 package com.cockatielstudios.utils;
 
 import com.badlogic.gdx.physics.box2d.*;
+import com.cockatielstudios.gameObjects.Fireball;
 import com.cockatielstudios.gameObjects.entities.Goomba;
 import com.cockatielstudios.gameObjects.entities.Player;
 import com.cockatielstudios.gameObjects.items.Flower;
@@ -24,6 +25,7 @@ public class CollisionListener implements ContactListener {
     private int collidedMushroomID;
     private int collidedFlowerID;
     private int collidedGoombaID;
+    private int collidedFireballID;
     private State stateChange;
 
     public CollisionListener(GameScreen screen, Hud hud) {
@@ -53,6 +55,10 @@ public class CollisionListener implements ContactListener {
 
     public int getCollidedGoombaID() {
         return collidedGoombaID;
+    }
+
+    public int getCollidedFireballID() {
+        return collidedFireballID;
     }
 
     public boolean isPlayerFellOut() {
@@ -184,6 +190,44 @@ public class CollisionListener implements ContactListener {
                 goomba = (Goomba) fixtureB.getUserData();
             }
             this.collidedGoombaID = goomba.getID();
+            this.hud.addScore(GOOMBA_SCORE);
+        }
+
+        if ((fixtureA.getUserData() instanceof Fireball || fixtureB.getUserData() instanceof Fireball) &&
+                (fixtureA.getUserData() == ObjectName.GROUND || fixtureB.getUserData() == ObjectName.GROUND)) {
+            Fireball fireball;
+            if (fixtureA.getUserData() instanceof Fireball) {
+                fireball = (Fireball) fixtureA.getUserData();
+            } else {
+                fireball = (Fireball) fixtureB.getUserData();
+            }
+            fireball.bounce();
+        }
+
+        if ((fixtureA.getUserData() instanceof Fireball || fixtureB.getUserData() instanceof Fireball) &&
+                (fixtureA.getUserData() == ObjectName.PIPE || fixtureB.getUserData() == ObjectName.PIPE)) {
+            Fireball fireball;
+            if (fixtureA.getUserData() instanceof Fireball) {
+                fireball = (Fireball) fixtureA.getUserData();
+            } else {
+                fireball = (Fireball) fixtureB.getUserData();
+            }
+            this.collidedFireballID = fireball.getID();
+        }
+
+        if ((fixtureA.getUserData() instanceof Fireball || fixtureB.getUserData() instanceof Fireball) &&
+                (fixtureA.getUserData() instanceof Goomba || fixtureB.getUserData() instanceof Goomba)) {
+            Fireball fireball;
+            Goomba goomba;
+            if (fixtureA.getUserData() instanceof Fireball) {
+                fireball = (Fireball) fixtureA.getUserData();
+                goomba = (Goomba) fixtureB.getUserData();
+            } else {
+                fireball = (Fireball) fixtureB.getUserData();
+                goomba = (Goomba) fixtureA.getUserData();
+            }
+            this.collidedGoombaID = goomba.getID();
+            this.collidedFireballID = fireball.getID();
             this.hud.addScore(GOOMBA_SCORE);
         }
     }

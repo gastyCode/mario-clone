@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.cockatielstudios.Assets;
@@ -76,17 +77,17 @@ public class Goomba extends Entity {
         bodyDef.position.x = position.x;
         bodyDef.position.y = position.y;
 
-        PolygonShape polygonShape = new PolygonShape();
-        polygonShape.setAsBox(this.getWidth() / 2f, this.getHeight() / 2f);
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(this.getWidth() / 2);
 
         this.setBody(this.getWorld().createBody(bodyDef));
 
         // Create Goomba body
         FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = polygonShape;
+        fixtureDef.shape = circleShape;
         fixtureDef.density = 0f;
         this.getBody().createFixture(fixtureDef).setUserData(this);
 
-        polygonShape.dispose();
+        circleShape.dispose();
     }
 }

@@ -24,6 +24,8 @@ public class Constants {
     public static final float GOOMBA_SPEED = 0.05f;
     public static final float GOOMBA_MAX_FORCE = 0.7f;
 
+    public static final float FIREBALL_SPEED = 1.5f;
+
     public static final float ENEMY_SPAWN_DISTANCE = 224f;
 
     public static final float ENEMY_WIDTH = 16f;

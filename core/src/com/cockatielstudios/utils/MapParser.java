@@ -97,7 +97,7 @@ public class MapParser {
             if (goomba instanceof RectangleMapObject) {
                 Rectangle rect = ((RectangleMapObject) goomba).getRectangle();
                 Vector2 position = new Vector2(rect.getX(), rect.getY());
-                
+
                 this.objectsManager.addGoombaData(position);
             }
         }

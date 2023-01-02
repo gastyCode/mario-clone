@@ -31,6 +31,7 @@ public class GameScreen implements Screen {
     private CollisionListener collisionListener;
     private Box2DDebugRenderer b2Debug;
 
+    private Animator animator;
     private Player player;
 
     public GameScreen(MainGame game) {
@@ -50,6 +51,7 @@ public class GameScreen implements Screen {
         this.mapParser = new MapParser(Assets.manager.get(Assets.map), this.objectsManager, this);
         this.mapParser.parseObjects();
 
+        this.animator = new Animator();
         this.player = new Player(this, new Vector2(10f, 50f), 16, 32);
         this.cameraManager = new CameraManager(this.camera, this.player);
     }
@@ -76,6 +78,10 @@ public class GameScreen implements Screen {
 
     public Hud getHud() {
         return hud;
+    }
+
+    public Animator getAnimator() {
+        return animator;
     }
 
     public void update(float delta) {
