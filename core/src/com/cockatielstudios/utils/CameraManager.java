@@ -3,10 +3,10 @@ package com.cockatielstudios.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector2;
 import com.cockatielstudios.gameObjects.entities.Player;
-
-import static com.cockatielstudios.Constants.*;
+import static com.cockatielstudios.Constants.WORLD_WIDTH;
+import static com.cockatielstudios.Constants.PPM;
+import static com.cockatielstudios.Constants.CAMERA_SPEED;
 
 public class CameraManager {
     private OrthographicCamera camera;
@@ -27,7 +27,7 @@ public class CameraManager {
 
     private void moveCamera() {
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            camera.position.y -= CAMERA_SPEED;
+            this.camera.position.y -= CAMERA_SPEED;
         }
         if (this.player.getPosition().x > this.movedDistance) {
             this.camera.position.x = this.player.getPosition().x - (WORLD_WIDTH / PPM) / 6;

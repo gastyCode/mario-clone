@@ -12,9 +12,16 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.cockatielstudios.Assets;
 import com.cockatielstudios.MainGame;
 import com.cockatielstudios.gameObjects.entities.Player;
-import com.cockatielstudios.utils.*;
-
-import static com.cockatielstudios.Constants.*;
+import com.cockatielstudios.utils.Animator;
+import com.cockatielstudios.utils.CameraManager;
+import com.cockatielstudios.utils.ObjectsManager;
+import com.cockatielstudios.utils.MapParser;
+import com.cockatielstudios.utils.CollisionListener;
+import com.cockatielstudios.utils.State;
+import static com.cockatielstudios.Constants.WORLD_WIDTH;
+import static com.cockatielstudios.Constants.WORLD_HEIGHT;
+import static com.cockatielstudios.Constants.PPM;
+import static com.cockatielstudios.Constants.GRAVITY;
 
 public class GameScreen implements Screen {
     private MainGame game;
@@ -34,13 +41,15 @@ public class GameScreen implements Screen {
     private Animator animator;
     private Player player;
 
+    private boolean isWin;
+
     public GameScreen(MainGame game) {
         this.game = game;
         this.camera = new OrthographicCamera();
         this.viewport = new StretchViewport(WORLD_WIDTH / PPM, WORLD_HEIGHT / PPM, this.camera);
         this.hud = new Hud(this.game.spriteBatch);
 
-        this.camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        this.camera.position.set(this.viewport.getWorldWidth() / 2, this.viewport.getWorldHeight() / 2, 0);
 
         this.world = new World(new Vector2(0f, GRAVITY), false);
         this.collisionListener = new CollisionListener(this, this.hud);
@@ -48,12 +57,14 @@ public class GameScreen implements Screen {
         this.b2Debug = new Box2DDebugRenderer(true, true, true, true, true, true);
 
         this.objectsManager = new ObjectsManager(this);
-        this.mapParser = new MapParser(Assets.manager.get(Assets.map), this.objectsManager, this);
+        this.mapParser = new MapParser(Assets.MANAGER.get(Assets.MAP), this.objectsManager, this);
         this.mapParser.parseObjects();
 
         this.animator = new Animator();
         this.player = new Player(this, new Vector2(10f, 50f), 16, 32);
         this.cameraManager = new CameraManager(this.camera, this.player);
+
+        this.isWin = false;
     }
 
     public World getWorld() {
@@ -77,15 +88,19 @@ public class GameScreen implements Screen {
     }
 
     public Hud getHud() {
-        return hud;
+        return this.hud;
     }
 
     public Animator getAnimator() {
-        return animator;
+        return this.animator;
+    }
+
+    public void setWin(boolean win) {
+        this.isWin = win;
     }
 
     public void update(float delta) {
-        this.world.step(1/60f, 6, 2);
+        this.world.step(1 / 60f, 6, 2);
 
         this.cameraManager.update();
         this.mapParser.update(this.camera);
@@ -93,6 +108,8 @@ public class GameScreen implements Screen {
         this.hud.update(delta);
 
         this.player.update(delta);
+        this.checkPlayerDeath();
+        this.checkWin();
     }
 
     @Override
@@ -103,7 +120,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        update(delta);
+        this.update(delta);
 
         this.game.spriteBatch.begin();
         this.mapParser.render();
@@ -119,7 +136,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        this.viewport.update(width, height);
     }
 
     @Override
@@ -143,5 +160,18 @@ public class GameScreen implements Screen {
         this.world.dispose();
         this.player.dispose();
         this.b2Debug.dispose();
+    }
+
+    public void checkPlayerDeath() {
+        if (this.getPlayerState() == State.DEATH) {
+            this.hud.gameOver();
+            this.player.dispose();
+        }
+    }
+
+    public void checkWin() {
+        if (this.isWin) {
+            this.hud.win();
+        }
     }
 }

@@ -1,18 +1,23 @@
 package com.cockatielstudios.utils;
 
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.cockatielstudios.gameObjects.Fireball;
 import com.cockatielstudios.gameObjects.entities.Goomba;
 import com.cockatielstudios.gameObjects.entities.Player;
 import com.cockatielstudios.gameObjects.items.Flower;
 import com.cockatielstudios.gameObjects.items.Mushroom;
 import com.cockatielstudios.gameObjects.tiles.Block;
+import com.cockatielstudios.gameObjects.tiles.DestroyableBlock;
 import com.cockatielstudios.gameObjects.tiles.MysteryBlock;
 import com.cockatielstudios.screens.GameScreen;
 import com.cockatielstudios.screens.Hud;
-import com.sun.org.apache.xalan.internal.xsltc.dom.NthIterator;
-
-import static com.cockatielstudios.Constants.*;
+import static com.cockatielstudios.Constants.BREAK_SCORE;
+import static com.cockatielstudios.Constants.GOOMBA_SCORE;
+import static com.cockatielstudios.Constants.POWER_UP_SCORE;
 
 public class CollisionListener implements ContactListener {
     private GameScreen screen;
@@ -26,7 +31,6 @@ public class CollisionListener implements ContactListener {
     private int collidedFlowerID;
     private int collidedGoombaID;
     private int collidedFireballID;
-    private State stateChange;
 
     public CollisionListener(GameScreen screen, Hud hud) {
         this.screen = screen;
@@ -34,39 +38,35 @@ public class CollisionListener implements ContactListener {
     }
 
     public boolean isPlayerGrounded() {
-        return playerGrounded;
+        return this.playerGrounded;
     }
 
     public int getCollidedMysteryBlockID() {
-        return collidedMysteryBlockID;
+        return this.collidedMysteryBlockID;
     }
 
     public int getCollidedBlockID() {
-        return collidedBlockID;
+        return this.collidedBlockID;
     }
 
     public int getCollidedMushroomID() {
-        return collidedMushroomID;
+        return this.collidedMushroomID;
     }
 
     public int getCollidedFlowerID() {
-        return collidedFlowerID;
+        return this.collidedFlowerID;
     }
 
     public int getCollidedGoombaID() {
-        return collidedGoombaID;
+        return this.collidedGoombaID;
     }
 
     public int getCollidedFireballID() {
-        return collidedFireballID;
+        return this.collidedFireballID;
     }
 
     public boolean isPlayerFellOut() {
-        return playerFellOut;
-    }
-
-    public State getStateChange() {
-        return stateChange;
+        return this.playerFellOut;
     }
 
     @Override
@@ -78,15 +78,37 @@ public class CollisionListener implements ContactListener {
             this.playerGrounded = true;
         }
 
-        if (fixtureA.getUserData() == ObjectName.PLAYER_TOP || fixtureB.getUserData() == ObjectName.PLAYER_TOP &&
-                fixtureA.getUserData() instanceof Block || fixtureB.getUserData() instanceof Block) {
+        if ((fixtureA.getUserData() instanceof Fireball || fixtureB.getUserData() instanceof Fireball) &&
+                (fixtureA.getUserData() == ObjectName.PIPE || fixtureB.getUserData() == ObjectName.PIPE)) {
+            Fireball fireball;
+            if (fixtureA.getUserData() instanceof Fireball) {
+                fireball = (Fireball)fixtureA.getUserData();
+            } else {
+                fireball = (Fireball)fixtureB.getUserData();
+            }
+            this.collidedFireballID = fireball.getID();
+        }
+
+        if ((fixtureA.getUserData() instanceof Fireball || fixtureB.getUserData() instanceof Fireball) &&
+                (fixtureA.getUserData() instanceof DestroyableBlock || fixtureB.getUserData() instanceof DestroyableBlock)) {
+            Fireball fireball;
+            if (fixtureA.getUserData() instanceof Fireball) {
+                fireball = (Fireball)fixtureA.getUserData();
+            } else {
+                fireball = (Fireball)fixtureB.getUserData();
+            }
+            this.collidedFireballID = fireball.getID();
+        }
+
+        if ((fixtureA.getUserData() == ObjectName.PLAYER_TOP || fixtureB.getUserData() == ObjectName.PLAYER_TOP) &&
+                (fixtureA.getUserData() instanceof Block || fixtureB.getUserData() instanceof Block)) {
 
             if (this.screen.getPlayerState() != State.SMALL) {
                 Block block;
                 if (fixtureA.getUserData() instanceof Block) {
-                    block = (Block) fixtureA.getUserData();
+                    block = (Block)fixtureA.getUserData();
                 } else {
-                    block = (Block) fixtureB.getUserData();
+                    block = (Block)fixtureB.getUserData();
                 }
                 this.collidedBlockID = block.getID();
                 this.hud.addScore(BREAK_SCORE);
@@ -98,9 +120,9 @@ public class CollisionListener implements ContactListener {
 
             MysteryBlock mysteryBlock;
             if (fixtureA.getUserData() instanceof MysteryBlock) {
-                mysteryBlock = (MysteryBlock) fixtureA.getUserData();
+                mysteryBlock = (MysteryBlock)fixtureA.getUserData();
             } else {
-                mysteryBlock = (MysteryBlock) fixtureB.getUserData();
+                mysteryBlock = (MysteryBlock)fixtureB.getUserData();
             }
             this.collidedMysteryBlockID = mysteryBlock.getID();
         }
@@ -115,9 +137,9 @@ public class CollisionListener implements ContactListener {
 
             Mushroom mushroom;
             if (fixtureA.getUserData() instanceof Mushroom) {
-                mushroom = (Mushroom) fixtureA.getUserData();
+                mushroom = (Mushroom)fixtureA.getUserData();
             } else {
-                mushroom = (Mushroom) fixtureB.getUserData();
+                mushroom = (Mushroom)fixtureB.getUserData();
             }
             mushroom.switchDirection();
         }
@@ -127,9 +149,9 @@ public class CollisionListener implements ContactListener {
 
             Goomba goomba;
             if (fixtureA.getUserData() instanceof Goomba) {
-                goomba = (Goomba) fixtureA.getUserData();
+                goomba = (Goomba)fixtureA.getUserData();
             } else {
-                goomba = (Goomba) fixtureB.getUserData();
+                goomba = (Goomba)fixtureB.getUserData();
             }
             goomba.switchDirection();
         }
@@ -138,13 +160,16 @@ public class CollisionListener implements ContactListener {
                 (fixtureA.getUserData() instanceof Player || fixtureB.getUserData() instanceof Player)) {
 
             Mushroom mushroom;
+            Player player;
             if (fixtureA.getUserData() instanceof Mushroom) {
-                mushroom = (Mushroom) fixtureA.getUserData();
+                mushroom = (Mushroom)fixtureA.getUserData();
+                player = (Player)fixtureB.getUserData();
             } else {
-                mushroom = (Mushroom) fixtureB.getUserData();
+                mushroom = (Mushroom)fixtureB.getUserData();
+                player = (Player)fixtureA.getUserData();
             }
             this.collidedMushroomID = mushroom.getID();
-            this.stateChange = mushroom.getStateChange();
+            player.powerUp();
             this.hud.addScore(POWER_UP_SCORE);
         }
 
@@ -152,13 +177,16 @@ public class CollisionListener implements ContactListener {
                 (fixtureA.getUserData() instanceof Player || fixtureB.getUserData() instanceof Player)) {
 
             Flower flower;
+            Player player;
             if (fixtureA.getUserData() instanceof Flower) {
-                flower = (Flower) fixtureA.getUserData();
+                flower = (Flower)fixtureA.getUserData();
+                player = (Player)fixtureB.getUserData();
             } else {
-                flower = (Flower) fixtureB.getUserData();
+                flower = (Flower)fixtureB.getUserData();
+                player = (Player)fixtureA.getUserData();
             }
             this.collidedFlowerID = flower.getID();
-            this.stateChange = flower.getStateChange();
+            player.powerUp();
             this.hud.addScore(POWER_UP_SCORE);
         }
 
@@ -168,14 +196,13 @@ public class CollisionListener implements ContactListener {
             Goomba goomba;
             Player player;
             if (fixtureA.getUserData() instanceof Goomba) {
-                goomba = (Goomba) fixtureA.getUserData();
-                player = (Player) fixtureB.getUserData();
+                goomba = (Goomba)fixtureA.getUserData();
+                player = (Player)fixtureB.getUserData();
             } else {
-                goomba = (Goomba) fixtureB.getUserData();
-                player = (Player) fixtureA.getUserData();
+                goomba = (Goomba)fixtureB.getUserData();
+                player = (Player)fixtureA.getUserData();
             }
             if (!goomba.getDisposed()) {
-                goomba.switchDirection();
                 player.takeDamage();
             }
         }
@@ -185,9 +212,9 @@ public class CollisionListener implements ContactListener {
 
             Goomba goomba;
             if (fixtureA.getUserData() instanceof Goomba) {
-                goomba = (Goomba) fixtureA.getUserData();
+                goomba = (Goomba)fixtureA.getUserData();
             } else {
-                goomba = (Goomba) fixtureB.getUserData();
+                goomba = (Goomba)fixtureB.getUserData();
             }
             this.collidedGoombaID = goomba.getID();
             this.hud.addScore(GOOMBA_SCORE);
@@ -197,22 +224,11 @@ public class CollisionListener implements ContactListener {
                 (fixtureA.getUserData() == ObjectName.GROUND || fixtureB.getUserData() == ObjectName.GROUND)) {
             Fireball fireball;
             if (fixtureA.getUserData() instanceof Fireball) {
-                fireball = (Fireball) fixtureA.getUserData();
+                fireball = (Fireball)fixtureA.getUserData();
             } else {
-                fireball = (Fireball) fixtureB.getUserData();
+                fireball = (Fireball)fixtureB.getUserData();
             }
             fireball.bounce();
-        }
-
-        if ((fixtureA.getUserData() instanceof Fireball || fixtureB.getUserData() instanceof Fireball) &&
-                (fixtureA.getUserData() == ObjectName.PIPE || fixtureB.getUserData() == ObjectName.PIPE)) {
-            Fireball fireball;
-            if (fixtureA.getUserData() instanceof Fireball) {
-                fireball = (Fireball) fixtureA.getUserData();
-            } else {
-                fireball = (Fireball) fixtureB.getUserData();
-            }
-            this.collidedFireballID = fireball.getID();
         }
 
         if ((fixtureA.getUserData() instanceof Fireball || fixtureB.getUserData() instanceof Fireball) &&
@@ -220,15 +236,20 @@ public class CollisionListener implements ContactListener {
             Fireball fireball;
             Goomba goomba;
             if (fixtureA.getUserData() instanceof Fireball) {
-                fireball = (Fireball) fixtureA.getUserData();
-                goomba = (Goomba) fixtureB.getUserData();
+                fireball = (Fireball)fixtureA.getUserData();
+                goomba = (Goomba)fixtureB.getUserData();
             } else {
-                fireball = (Fireball) fixtureB.getUserData();
-                goomba = (Goomba) fixtureA.getUserData();
+                fireball = (Fireball)fixtureB.getUserData();
+                goomba = (Goomba)fixtureA.getUserData();
             }
             this.collidedGoombaID = goomba.getID();
             this.collidedFireballID = fireball.getID();
             this.hud.addScore(GOOMBA_SCORE);
+        }
+
+        if ((fixtureA.getUserData() instanceof Player || fixtureB.getUserData() instanceof Player) &&
+                (fixtureA.getUserData() == ObjectName.FLAG || fixtureB.getUserData() == ObjectName.FLAG)) {
+            this.screen.setWin(true);
         }
     }
 

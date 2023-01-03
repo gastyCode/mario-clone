@@ -7,11 +7,11 @@ import com.cockatielstudios.gameObjects.items.Flower;
 import com.cockatielstudios.gameObjects.items.Mushroom;
 import com.cockatielstudios.screens.GameScreen;
 import com.cockatielstudios.utils.ObjectsManager;
-import static com.cockatielstudios.Constants.*;
+import static com.cockatielstudios.Constants.ITEM_WIDTH;
+import static com.cockatielstudios.Constants.ITEM_HEIGHT;
+import static com.cockatielstudios.Constants.PPM;
 
-import java.awt.font.TextHitInfo;
-
-public class MysteryBlock extends DestroyableBlock{
+public class MysteryBlock extends DestroyableBlock {
     private boolean isActive;
     private int itemID;
     private boolean isSpecial;
@@ -37,7 +37,7 @@ public class MysteryBlock extends DestroyableBlock{
     public void onCollision() {
         if (this.isActive) {
             this.isActive = false;
-            this.setDestroyedTile(Assets.manager.get(Assets.emptyBlock));
+            this.setDestroyedTile(Assets.MANAGER.get(Assets.EMPTY_BLOCK));
             this.spawnItem();
         }
     }
@@ -46,13 +46,14 @@ public class MysteryBlock extends DestroyableBlock{
         Vector2 position = new Vector2(this.getPosition().x * PPM, this.getPosition().y * PPM + ITEM_HEIGHT);
         if (this.isSpecial) {
             switch (this.getScreen().getPlayerState()) {
-                default:
-                    break;
                 case SMALL:
                     this.getObjectsManager().addMushroom(new Mushroom(this.getScreen(), position, ITEM_WIDTH, ITEM_HEIGHT, this.getObjectsManager().getAvailableID()));
                     break;
                 case BIG:
                     this.getObjectsManager().addFlower(new Flower(this.getScreen(), position, ITEM_WIDTH, ITEM_HEIGHT, this.getObjectsManager().getAvailableID()));
+                    break;
+                case FLOWER:
+                    this.getObjectsManager().addCoin(new Coin(this.getScreen(), position, ITEM_WIDTH, ITEM_HEIGHT));
                     break;
             }
         } else {

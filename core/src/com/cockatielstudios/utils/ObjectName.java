@@ -5,5 +5,6 @@ public enum ObjectName {
     PLAYER_BOTTOM,
     FALL_DETECTOR,
     GROUND,
-    PIPE
+    PIPE,
+    FLAG
 }

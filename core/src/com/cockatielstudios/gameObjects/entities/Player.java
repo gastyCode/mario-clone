@@ -6,42 +6,53 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.cockatielstudios.gameObjects.Fireball;
 import com.cockatielstudios.utils.Animator;
 import com.cockatielstudios.utils.Facing;
 import com.cockatielstudios.utils.ObjectName;
 import com.cockatielstudios.utils.State;
 import com.cockatielstudios.screens.GameScreen;
-
-import static com.cockatielstudios.Constants.*;
+import static com.cockatielstudios.Constants.PLAYER_SPEED;
+import static com.cockatielstudios.Constants.PLAYER_MAX_FORCE;
+import static com.cockatielstudios.Constants.PLAYER_JUMP_FORCE;
+import static com.cockatielstudios.Constants.PLAYER_DENSITY;
+import static com.cockatielstudios.Constants.ITEM_WIDTH;
+import static com.cockatielstudios.Constants.ITEM_HEIGHT;
+import static com.cockatielstudios.Constants.PLAYER_RECREATE_TIME;
 
 import java.util.ArrayList;
 
-public class Player extends Entity{
+public class Player extends Entity {
     private TextureRegion texture;
     private Animation<TextureRegion> animation;
     private float animationTime;
 
     private ArrayList<Fireball> fireballs;
-
     private int fireballID;
 
     private Facing facing;
 
+    private float timer;
+
     private boolean canJump;
     private boolean bodyExists;
+    private boolean bodyDestroyed;
     private boolean isMovableToLeft;
 
     public Player(GameScreen screen, Vector2 position, float width, float height) {
-        super(screen, position, width, height, State.DEFAULT);
+        super(screen, position, width, height, State.SMALL);
         this.createBody(this.getPosition());
-        this.setState(State.SMALL);
         this.fireballs = new ArrayList<Fireball>();
         this.fireballID = 0;
         this.facing = Facing.RIGHT;
+        this.timer = 0f;
         this.canJump = false;
         this.bodyExists = true;
+        this.bodyDestroyed = false;
         this.isMovableToLeft = true;
 
         this.animation = this.getAnimator().getSmallWalkRight();
@@ -54,13 +65,14 @@ public class Player extends Entity{
     }
 
     public void setMovableToLeft(boolean movableToLeft) {
-        isMovableToLeft = movableToLeft;
+        this.isMovableToLeft = movableToLeft;
     }
 
     @Override
     public void render(SpriteBatch spriteBatch) {
         this.texture = this.animation.getKeyFrame(this.animationTime, true);
         spriteBatch.draw(this.texture, this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
+
         for (Fireball fireball : this.fireballs) {
             fireball.render(spriteBatch);
         }
@@ -68,12 +80,11 @@ public class Player extends Entity{
 
     @Override
     public void update(float delta) {
-//        this.recreateBody();
+        this.recreateBody(delta);
         this.movement();
         this.animationTime += delta;
         this.animate();
         this.canJump = this.getCollisions().isPlayerGrounded();
-        this.checkStateChange(this.getCollisions().getStateChange());
 
         if (this.getCollisions().isPlayerFellOut()) {
             this.dispose();
@@ -89,7 +100,10 @@ public class Player extends Entity{
 
     @Override
     public void dispose() {
-
+        if (!this.getWorld().isLocked() && this.bodyExists) {
+            this.bodyExists = false;
+            this.getWorld().destroyBody(this.getBody());
+        }
     }
 
     @Override
@@ -116,7 +130,7 @@ public class Player extends Entity{
     public void animate() {
         switch (this.getState()) {
             case SMALL:
-                if (this.getBody().getLinearVelocity().y > 0f) {
+                if (this.getBody().getLinearVelocity().y > 0f || this.getBody().getLinearVelocity().y < 0f) {
                     if (this.facing == Facing.LEFT) {
                         this.animation = this.getAnimator().getSmallJumpLeft();
                     } else {
@@ -137,7 +151,7 @@ public class Player extends Entity{
                 }
                 break;
             case BIG:
-                if (this.getBody().getLinearVelocity().y > 0f) {
+                if (this.getBody().getLinearVelocity().y > 0f || this.getBody().getLinearVelocity().y < 0f) {
                     if (this.facing == Facing.LEFT) {
                         this.animation = this.getAnimator().getBigJumpLeft();
                     } else {
@@ -158,7 +172,7 @@ public class Player extends Entity{
                 }
                 break;
             case FLOWER:
-                if (this.getBody().getLinearVelocity().y > 0f) {
+                if (this.getBody().getLinearVelocity().y > 0f || this.getBody().getLinearVelocity().y < 0f) {
                     if (this.facing == Facing.LEFT) {
                         this.animation = this.getAnimator().getFlowerJumpLeft();
                     } else {
@@ -209,25 +223,33 @@ public class Player extends Entity{
 
         this.setBody(this.getWorld().createBody(bodyDef));
 
-        // Create player body
         FixtureDef fixtureDef = new FixtureDef();
+
+        // Create player body
         fixtureDef.shape = circleShape;
         fixtureDef.density = PLAYER_DENSITY;
         fixtureDef.friction = 1.2f;
         this.getBody().createFixture(fixtureDef).setUserData(this);
 
-        polygonShape.setAsBox(this.getWidth() / 4, 0.1f, new Vector2(0f, this.getHeight() / 6), 0f);
-        fixtureDef.shape = polygonShape;
-        this.getBody().createFixture(fixtureDef);
-
         // Create player bottom sensor
-        polygonShape.setAsBox(this.getWidth() / 10, 0.01f, new Vector2(0f, -this.getHeight() / 2), 0f);
+        polygonShape.setAsBox(this.getWidth() / 3f, 0.02f, new Vector2(0f, -this.getHeight() / 1.8f), 0f);
         fixtureDef.shape = polygonShape;
         fixtureDef.isSensor = true;
         this.getBody().createFixture(fixtureDef).setUserData(ObjectName.PLAYER_BOTTOM);
 
-        // Create player top sensor
-        polygonShape.setAsBox(this.getWidth() / 10, 0.02f, new Vector2(0f, this.getHeight() / 1.8f), 0f);
+        if (this.getState() != State.SMALL) {
+            // Create player extended body
+            polygonShape.setAsBox(this.getWidth() / 4f, 0.1f, new Vector2(0f, this.getHeight() / 6f), 0f);
+            fixtureDef.shape = polygonShape;
+            fixtureDef.isSensor = false;
+            this.getBody().createFixture(fixtureDef).setUserData(this);
+
+            // Create player top sensor
+            polygonShape.setAsBox(this.getWidth() / 12f, 0.01f, new Vector2(0f, this.getHeight() / 1.8f), 0f);
+        } else {
+            // Create player top sensor
+            polygonShape.setAsBox(this.getWidth() / 12f, 0.01f, new Vector2(0f, this.getHeight() / 30f), 0f);
+        }
         fixtureDef.shape = polygonShape;
         fixtureDef.isSensor = true;
         this.getBody().createFixture(fixtureDef).setUserData(ObjectName.PLAYER_TOP);
@@ -259,24 +281,39 @@ public class Player extends Entity{
                     this.setState(State.SMALL);
                     break;
                 case SMALL:
-                    this.dispose();
+                    this.setState(State.DEATH);
                     break;
             }
             this.bodyExists = false;
         }
     }
 
-    private void recreateBody() {
-        if (!this.getWorld().isLocked() && !this.bodyExists) {
-            this.bodyExists = true;
-            this.getWorld().destroyBody(this.getBody());
-            this.createBody(this.getPosition());
+    public void powerUp() {
+        if (this.bodyExists) {
+            switch (this.getState()) {
+                case SMALL:
+                    this.setState(State.BIG);
+                    break;
+                case BIG:
+                    this.setState(State.FLOWER);
+                    break;
+            }
+            this.bodyExists = false;
         }
     }
 
-    private void checkStateChange(State stateToCheck) {
-        if (this.getState() != stateToCheck && stateToCheck != null) {
-            this.setState(stateToCheck);
+    private void recreateBody(float delta) {
+        if (!this.getWorld().isLocked() && !this.bodyExists && !this.bodyDestroyed) {
+            this.getWorld().destroyBody(this.getBody());
+            this.bodyDestroyed = true;
+        } else if (!this.bodyExists && this.bodyDestroyed) {
+            this.timer += delta;
+            if (this.timer >= PLAYER_RECREATE_TIME) {
+                this.timer = 0f;
+                this.bodyExists = true;
+                this.bodyDestroyed = false;
+                this.createBody(this.getPosition());
+            }
         }
     }
 }

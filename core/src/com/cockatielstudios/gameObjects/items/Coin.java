@@ -4,16 +4,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.cockatielstudios.screens.GameScreen;
-import com.cockatielstudios.utils.State;
-import static com.cockatielstudios.Constants.*;
+import static com.cockatielstudios.Constants.COIN_LIFESPAN;
 
-public class Coin extends Item{
+public class Coin extends Item {
     private final TextureRegion texture;
     private float time;
     private boolean isDisposed;
 
     public Coin(GameScreen screen, Vector2 position, float width, float height) {
-        super(screen, position, width, height, State.DEFAULT, 0);
+        super(screen, position, width, height, 0);
         this.createBody(this.getPosition(), this);
         this.texture = new TextureRegion(this.getTextureRegion("coin1"));
         this.time = 0f;

@@ -1,7 +1,6 @@
 package com.cockatielstudios.utils;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
@@ -14,13 +13,15 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.cockatielstudios.gameObjects.tiles.Block;
 import com.cockatielstudios.gameObjects.tiles.Ground;
-import com.cockatielstudios.gameObjects.tiles.MysteryBlock;
 import com.cockatielstudios.gameObjects.tiles.Pipe;
+import com.cockatielstudios.gameObjects.tiles.Block;
+import com.cockatielstudios.gameObjects.tiles.MysteryBlock;
+import com.cockatielstudios.gameObjects.tiles.Flag;
 import com.cockatielstudios.screens.GameScreen;
-
-import static com.cockatielstudios.Constants.*;
+import static com.cockatielstudios.Constants.PPM;
+import static com.cockatielstudios.Constants.FALL_SENSOR_HEIGHT;
+import static com.cockatielstudios.Constants.WORLD_WIDTH;
 
 public class MapParser {
     private GameScreen screen;
@@ -57,10 +58,11 @@ public class MapParser {
         MapObjects blockObjects = this.map.getLayers().get("Blocks").getObjects();
         MapObjects mysteryBlockObjects = this.map.getLayers().get("MysteryBlocks").getObjects();
         MapObjects goombaObjects = this.map.getLayers().get("Goombas").getObjects();
+        MapObjects flagObjects = this.map.getLayers().get("Flag").getObjects();
 
         for (MapObject groundBlock : groundObjects) {
             if (groundBlock instanceof RectangleMapObject) {
-                Rectangle rect = ((RectangleMapObject) groundBlock).getRectangle();
+                Rectangle rect = ((RectangleMapObject)groundBlock).getRectangle();
                 Vector2 position = new Vector2(rect.getX(), rect.getY());
 
                 new Ground(this.screen, position, rect.getWidth(), rect.getHeight());
@@ -68,7 +70,7 @@ public class MapParser {
         }
         for (MapObject pipe : pipeObjects) {
             if (pipe instanceof RectangleMapObject) {
-                Rectangle rect = ((RectangleMapObject) pipe).getRectangle();
+                Rectangle rect = ((RectangleMapObject)pipe).getRectangle();
                 Vector2 position = new Vector2(rect.getX(), rect.getY());
 
                 new Pipe(this.screen, position, rect.getWidth(), rect.getHeight());
@@ -76,7 +78,7 @@ public class MapParser {
         }
         for (MapObject block : blockObjects) {
             if (block instanceof RectangleMapObject) {
-                Rectangle rect = ((RectangleMapObject) block).getRectangle();
+                Rectangle rect = ((RectangleMapObject)block).getRectangle();
                 Vector2 position = new Vector2(rect.getX(), rect.getY());
                 MapProperties props = block.getProperties();
 
@@ -85,7 +87,7 @@ public class MapParser {
         }
         for (MapObject mysteryBlock : mysteryBlockObjects) {
             if (mysteryBlock instanceof RectangleMapObject) {
-                Rectangle rect = ((RectangleMapObject) mysteryBlock).getRectangle();
+                Rectangle rect = ((RectangleMapObject)mysteryBlock).getRectangle();
                 Vector2 position = new Vector2(rect.getX(), rect.getY());
                 MapProperties props = mysteryBlock.getProperties();
 
@@ -95,10 +97,19 @@ public class MapParser {
 
         for (MapObject goomba : goombaObjects) {
             if (goomba instanceof RectangleMapObject) {
-                Rectangle rect = ((RectangleMapObject) goomba).getRectangle();
+                Rectangle rect = ((RectangleMapObject)goomba).getRectangle();
                 Vector2 position = new Vector2(rect.getX(), rect.getY());
 
                 this.objectsManager.addGoombaData(position);
+            }
+        }
+
+        for (MapObject flag : flagObjects) {
+            if (flag instanceof RectangleMapObject) {
+                Rectangle rect = ((RectangleMapObject)flag).getRectangle();
+                Vector2 position = new Vector2(rect.getX(), rect.getY());
+
+                new Flag(this.screen, position, rect.getWidth(), rect.getHeight());
             }
         }
     }

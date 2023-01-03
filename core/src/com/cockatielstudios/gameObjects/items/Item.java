@@ -3,34 +3,29 @@ package com.cockatielstudios.gameObjects.items;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.cockatielstudios.Assets;
 import com.cockatielstudios.gameObjects.GameObject;
 import com.cockatielstudios.screens.GameScreen;
-import com.cockatielstudios.utils.State;
 
 public abstract class Item extends GameObject {
     private TextureAtlas textureAtlas;
-    private State stateChange;
     private int id;
 
-    public Item(GameScreen screen, Vector2 position, float width, float height, State stateChange, int id) {
+    public Item(GameScreen screen, Vector2 position, float width, float height, int id) {
         super(screen, position, width, height);
-        this.textureAtlas = Assets.manager.get(Assets.items);
-        this.stateChange = stateChange;
+        this.textureAtlas = Assets.MANAGER.get(Assets.ITEMS);
         this.id = id;
     }
 
     public int getID() {
-        return id;
+        return this.id;
     }
 
     public TextureRegion getTextureRegion(String region) {
         return this.textureAtlas.findRegion(region);
-    }
-
-    public State getStateChange() {
-        return stateChange;
     }
 
     public <T> void createBody(Vector2 position, T object) {

@@ -9,9 +9,11 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.cockatielstudios.Assets;
 import com.cockatielstudios.screens.GameScreen;
 import com.cockatielstudios.utils.Facing;
-import static com.cockatielstudios.Constants.*;
+import static com.cockatielstudios.Constants.FIREBALL_FORCE;
+import static com.cockatielstudios.Constants.FIREBALL_SPEED;
+import static com.cockatielstudios.Constants.PPM;
 
-public class Fireball extends GameObject{
+public class Fireball extends GameObject {
     private Texture texture;
     private float speed;
     private int id;
@@ -19,7 +21,7 @@ public class Fireball extends GameObject{
 
     public Fireball(GameScreen screen, Vector2 position, float width, float height, Facing facing, int id) {
         super(screen, position, width, height);
-        this.texture = Assets.manager.get(Assets.fireball);
+        this.texture = Assets.MANAGER.get(Assets.FIREBALL);
         this.id = id;
         this.isDisposed = false;
 
@@ -36,7 +38,7 @@ public class Fireball extends GameObject{
     }
 
     public int getID() {
-        return id;
+        return this.id;
     }
 
     @Override
@@ -61,7 +63,7 @@ public class Fireball extends GameObject{
 
     public void bounce() {
         this.getBody().setLinearVelocity(0f, 0f);
-        this.getBody().applyLinearImpulse(new Vector2(this.speed, 2f), this.getBody().getWorldCenter(), true);
+        this.getBody().applyLinearImpulse(new Vector2(this.speed, FIREBALL_FORCE), this.getBody().getWorldCenter(), true);
     }
 
     private void createBody(Vector2 position) {

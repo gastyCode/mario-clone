@@ -17,6 +17,7 @@ public class Constants {
     public static final float PLAYER_JUMP_FORCE = 1f;
     public static final float PLAYER_MAX_FORCE = 2f;
     public static final float PLAYER_DENSITY = 0f;
+    public static final float PLAYER_RECREATE_TIME = 1f;
 
     public static final float MUSHROOM_SPEED = 0.05f;
     public static final float MUSHROOM_MAX_FORCE = 0.7f;
@@ -25,16 +26,15 @@ public class Constants {
     public static final float GOOMBA_MAX_FORCE = 0.7f;
 
     public static final float FIREBALL_SPEED = 1.5f;
+    public static final float FIREBALL_FORCE = 2f;
 
-    public static final float ENEMY_SPAWN_DISTANCE = 224f;
+    public static final float ENEMY_SPAWN_DISTANCE = 240f;
 
     public static final float ENEMY_WIDTH = 16f;
     public static final float ENEMY_HEIGHT = 16f;
 
     public static final float ITEM_WIDTH = 16f;
     public static final float ITEM_HEIGHT = 16f;
-
-    public static final float BODY_RECREATE_TIME = 3f;
 
     public static final int BREAK_SCORE = 50;
     public static final int COIN_SCORE = 200;

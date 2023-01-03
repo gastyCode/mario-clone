@@ -4,5 +4,6 @@ public enum State {
     DEFAULT,
     SMALL,
     BIG,
-    FLOWER
+    FLOWER,
+    DEATH
 }

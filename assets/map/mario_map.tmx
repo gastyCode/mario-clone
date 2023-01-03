@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.1" orientation="orthogonal" renderorder="right-down" width="212" height="14" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="106">
+<map version="1.5" tiledversion="1.7.1" orientation="orthogonal" renderorder="right-down" width="212" height="14" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="108">
  <tileset firstgid="1" source="mario_tileset.tsx"/>
  <layer id="1" name="Map" width="212" height="14">
   <data encoding="csv">
@@ -165,7 +165,6 @@
   <object id="87" x="352" y="176" width="16" height="16"/>
   <object id="91" x="480" y="176" width="16" height="16"/>
   <object id="92" x="832" y="176" width="16" height="16"/>
-  <object id="93" x="848" y="176" width="16" height="16"/>
   <object id="94" x="1552" y="176" width="16" height="16"/>
   <object id="95" x="1568" y="176" width="16" height="16"/>
   <object id="96" x="1824" y="176" width="16" height="16"/>
@@ -174,7 +173,9 @@
   <object id="99" x="2048" y="176" width="16" height="16"/>
   <object id="100" x="2016" y="176" width="16" height="16"/>
   <object id="101" x="2000" y="176" width="16" height="16"/>
-  <object id="104" x="2816" y="176" width="16" height="16"/>
   <object id="105" x="2800" y="176" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup id="8" name="Flag">
+  <object id="107" x="3168" y="16" width="16" height="160"/>
  </objectgroup>
 </map>

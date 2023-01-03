@@ -4,14 +4,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.cockatielstudios.screens.GameScreen;
-import com.cockatielstudios.utils.State;
 
 public class Flower extends Item {
     private final TextureRegion texture;
     private boolean isDisposed;
 
     public Flower(GameScreen screen, Vector2 position, float width, float height, int id) {
-        super(screen, position, width, height, State.FLOWER, id);
+        super(screen, position, width, height, id);
         this.createBody(this.getPosition(), this);
         this.texture = new TextureRegion(this.getTextureRegion("flower"));
         this.isDisposed = false;

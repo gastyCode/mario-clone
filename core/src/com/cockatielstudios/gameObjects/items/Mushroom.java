@@ -4,16 +4,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.cockatielstudios.screens.GameScreen;
-import com.cockatielstudios.utils.State;
-import static com.cockatielstudios.Constants.*;
+import static com.cockatielstudios.Constants.MUSHROOM_SPEED;
+import static com.cockatielstudios.Constants.MUSHROOM_MAX_FORCE;
 
-public class Mushroom extends Item{
+public class Mushroom extends Item {
     private final TextureRegion texture;
     private float speed;
     private boolean isDisposed;
 
     public Mushroom(GameScreen screen, Vector2 position, float width, float height, int id) {
-        super(screen, position, width, height, State.BIG, id);
+        super(screen, position, width, height, id);
         this.createBody(this.getPosition(), this);
         this.texture = new TextureRegion(this.getTextureRegion("mushroom"));
         this.speed = MUSHROOM_SPEED;

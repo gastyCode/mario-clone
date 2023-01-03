@@ -1,20 +1,24 @@
 package com.cockatielstudios.gameObjects.entities;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.cockatielstudios.Assets;
 import com.cockatielstudios.screens.GameScreen;
+import com.cockatielstudios.utils.Animator;
 import com.cockatielstudios.utils.State;
-import static com.cockatielstudios.Constants.*;
+import static com.cockatielstudios.Constants.GOOMBA_SPEED;
+import static com.cockatielstudios.Constants.GOOMBA_MAX_FORCE;
 
 public class Goomba extends Entity {
+    private TextureRegion texture;
+    private Animation<TextureRegion> animation;
+    private float animationTime;
+
     private float speed;
-    private Texture test;
     private boolean isDisposed;
     private int id;
 
@@ -25,15 +29,21 @@ public class Goomba extends Entity {
         this.isDisposed = false;
         this.id = id;
 
-        this.test = Assets.manager.get(Assets.goomba);
+        this.animation = this.getAnimator().getGoombaWalk();
+        this.texture = this.animation.getKeyFrame(0f);
+        this.animationTime = 0f;
     }
 
     public int getID() {
-        return id;
+        return this.id;
     }
 
     public boolean getDisposed() {
         return this.isDisposed;
+    }
+
+    public Animator getAnimator() {
+        return this.getScreen().getAnimator();
     }
 
     @Override
@@ -46,12 +56,16 @@ public class Goomba extends Entity {
 
     @Override
     public void render(SpriteBatch spriteBatch) {
-        spriteBatch.draw(this.test, this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
+        this.texture = this.animation.getKeyFrame(this.animationTime, true);
+        spriteBatch.draw(this.texture, this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
     }
 
     @Override
     public void update(float delta) {
         this.movement();
+        this.animationTime += delta;
+        this.animate();
+
         this.setCornerPosition(this.getBody().getPosition());
     }
 
@@ -64,7 +78,11 @@ public class Goomba extends Entity {
 
     @Override
     public void animate() {
-
+        if (this.isDisposed) {
+            this.animation = this.getAnimator().getGoombaDeath();
+        } else {
+            this.animation = this.getAnimator().getGoombaWalk();
+        }
     }
 
     public void switchDirection() {

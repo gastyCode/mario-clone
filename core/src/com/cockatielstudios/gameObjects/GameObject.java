@@ -2,11 +2,11 @@ package com.cockatielstudios.gameObjects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 import com.cockatielstudios.screens.GameScreen;
 import com.cockatielstudios.utils.CollisionListener;
-
-import static com.cockatielstudios.Constants.*;
+import static com.cockatielstudios.Constants.PPM;
 
 public abstract class GameObject {
     private GameScreen screen;
@@ -31,11 +31,11 @@ public abstract class GameObject {
     }
 
     public GameScreen getScreen() {
-        return screen;
+        return this.screen;
     }
 
     public Body getBody() {
-        return body;
+        return this.body;
     }
 
     public World getWorld() {
@@ -43,11 +43,11 @@ public abstract class GameObject {
     }
 
     public Vector2 getPosition() {
-        return position;
+        return this.position;
     }
 
     public CollisionListener getCollisions() {
-        return screen.getCollisionListener();
+        return this.screen.getCollisionListener();
     }
 
     public void setBody(Body body) {

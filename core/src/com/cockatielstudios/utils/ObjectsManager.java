@@ -9,7 +9,11 @@ import com.cockatielstudios.gameObjects.items.Mushroom;
 import com.cockatielstudios.gameObjects.tiles.Block;
 import com.cockatielstudios.gameObjects.tiles.MysteryBlock;
 import com.cockatielstudios.screens.GameScreen;
-import static com.cockatielstudios.Constants.*;
+import static com.cockatielstudios.Constants.PPM;
+import static com.cockatielstudios.Constants.COIN_SCORE;
+import static com.cockatielstudios.Constants.ENEMY_SPAWN_DISTANCE;
+import static com.cockatielstudios.Constants.ENEMY_WIDTH;
+import static com.cockatielstudios.Constants.ENEMY_HEIGHT;
 
 import java.util.ArrayList;
 
@@ -128,6 +132,7 @@ public class ObjectsManager {
         }
 
         // Remove coin
+        index = -1;
         for (int i = 0; i < this.coins.size(); i++) {
             if (this.coins.get(i).getDisposed()) {
                 index = i;
@@ -154,7 +159,7 @@ public class ObjectsManager {
     public void spawnEnemies() {
         for (int i = 0; i < this.goombasData.size(); i++) {
             Vector2 position = this.goombasData.get(i);
-            if (position.x - ENEMY_SPAWN_DISTANCE > this.screen.getPlayerPosition().x) {
+            if (position.x - (this.screen.getPlayerPosition().x * PPM) < ENEMY_SPAWN_DISTANCE) {
                 this.goombas.add(new Goomba(this.screen, position, ENEMY_WIDTH, ENEMY_HEIGHT, this.getAvailableID()));
                 this.goombasData.remove(i);
             }

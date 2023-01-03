@@ -21,6 +21,6 @@ public class Button {
     }
 
     public void render() {
-        stage.draw();
+        this.stage.draw();
     }
 }

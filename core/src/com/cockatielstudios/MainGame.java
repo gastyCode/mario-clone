@@ -11,7 +11,7 @@ public class MainGame extends Game {
 	@Override
 	public void create () {
 		Assets.load();
-		Assets.manager.finishLoading();
+		Assets.MANAGER.finishLoading();
 		Box2D.init();
 
 		spriteBatch = new SpriteBatch();
