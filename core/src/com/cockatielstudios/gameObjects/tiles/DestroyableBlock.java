@@ -41,7 +41,7 @@ public abstract class DestroyableBlock extends GameObject {
 
     public abstract void onCollision();
 
-    protected <T> void createBody(Vector2 position, T object) {
+    public <T> void createBody(Vector2 position, T object) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.x = position.x;

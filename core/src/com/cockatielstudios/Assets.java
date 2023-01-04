@@ -21,8 +21,10 @@ public class Assets {
     public static final AssetDescriptor<Texture> EMPTY_TILE = new AssetDescriptor<Texture>("sprites/empty_tile.png", Texture.class);
     public static final AssetDescriptor<TextureAtlas> ITEMS = new AssetDescriptor<>("sprites/items.atlas", TextureAtlas.class);
     public static final AssetDescriptor<Texture> GOOMBA = new AssetDescriptor<Texture>("sprites/goomba.png", Texture.class);
-    public static final AssetDescriptor<BitmapFont> ARCADE_CLASSIC = new AssetDescriptor<BitmapFont>("fonts/arcadeclassic.fnt", BitmapFont.class);
+    public static final AssetDescriptor<BitmapFont> JOYSTIX = new AssetDescriptor<BitmapFont>("fonts/joystix.fnt", BitmapFont.class);
     public static final AssetDescriptor<Texture> FIREBALL = new AssetDescriptor<Texture>("sprites/fireball.png", Texture.class);
+    public static final AssetDescriptor<Texture> BACKGOUND = new AssetDescriptor<Texture>("sprites/bg.png", Texture.class);
+    public static final AssetDescriptor<Texture> LOGO = new AssetDescriptor<Texture>("sprites/logo.png", Texture.class);
 
     public static void load() {
         MANAGER.load(PLAYER);
@@ -31,11 +33,13 @@ public class Assets {
         MANAGER.load(ITEMS);
         MANAGER.load(GOOMBA);
         MANAGER.load(FIREBALL);
+        MANAGER.load(BACKGOUND);
+        MANAGER.load(LOGO);
 
         InternalFileHandleResolver resolver = new InternalFileHandleResolver();
         MANAGER.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
         MANAGER.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
-        MANAGER.load(ARCADE_CLASSIC);
+        MANAGER.load(JOYSTIX);
 
         MANAGER.setLoader(TiledMap.class, new TmxMapLoader(resolver));
         MANAGER.load(MAP);

@@ -3,20 +3,21 @@ package com.cockatielstudios;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Box2D;
-import com.cockatielstudios.screens.GameScreen;
+import com.cockatielstudios.screens.MenuScreen;
 
 public class MainGame extends Game {
-	public SpriteBatch spriteBatch;
+	private SpriteBatch spriteBatch;
 
 	@Override
 	public void create () {
+
 		Assets.load();
 		Assets.MANAGER.finishLoading();
 		Box2D.init();
 
-		spriteBatch = new SpriteBatch();
-//		setScreen(new MenuScreen(this));
-		setScreen(new GameScreen(this));
+		this.spriteBatch = new SpriteBatch();
+
+		setScreen(new MenuScreen(this, this.spriteBatch));
 	}
 
 	@Override
@@ -28,6 +29,6 @@ public class MainGame extends Game {
 	public void dispose () {
 		super.dispose();
 		Assets.dispose();
-		spriteBatch.dispose();
+		this.spriteBatch.dispose();
 	}
 }

@@ -114,7 +114,7 @@ public class MapParser {
         }
     }
 
-    public void createFallSensor(Vector2 position, float width, float height) {
+    private void createFallSensor(Vector2 position, float width, float height) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.x = position.x;

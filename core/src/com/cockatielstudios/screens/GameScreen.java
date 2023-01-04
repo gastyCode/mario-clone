@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -25,6 +26,7 @@ import static com.cockatielstudios.Constants.GRAVITY;
 
 public class GameScreen implements Screen {
     private MainGame game;
+    private SpriteBatch spriteBatch;
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -43,11 +45,12 @@ public class GameScreen implements Screen {
 
     private boolean isWin;
 
-    public GameScreen(MainGame game) {
+    public GameScreen(MainGame game, SpriteBatch spriteBatch) {
         this.game = game;
+        this.spriteBatch = spriteBatch;
         this.camera = new OrthographicCamera();
         this.viewport = new StretchViewport(WORLD_WIDTH / PPM, WORLD_HEIGHT / PPM, this.camera);
-        this.hud = new Hud(this.game.spriteBatch);
+        this.hud = new Hud(this.spriteBatch);
 
         this.camera.position.set(this.viewport.getWorldWidth() / 2, this.viewport.getWorldHeight() / 2, 0);
 
@@ -109,6 +112,7 @@ public class GameScreen implements Screen {
 
         this.player.update(delta);
         this.checkPlayerDeath();
+        this.chceckTimer();
         this.checkWin();
     }
 
@@ -122,16 +126,16 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         this.update(delta);
 
-        this.game.spriteBatch.begin();
+        this.spriteBatch.begin();
         this.mapParser.render();
-        this.objectsManager.render(this.game.spriteBatch, delta);
-        this.player.render(this.game.spriteBatch);
-        this.game.spriteBatch.end();
+        this.objectsManager.render(this.spriteBatch, delta);
+        this.player.render(this.spriteBatch);
+        this.spriteBatch.end();
 
-        this.game.spriteBatch.setProjectionMatrix(this.hud.getStage().getCamera().combined);
+        this.spriteBatch.setProjectionMatrix(this.hud.getStage().getCamera().combined);
         this.hud.getStage().draw();
 
-        this.b2Debug.render(this.world, this.camera.combined);
+//        this.b2Debug.render(this.world, this.camera.combined);
     }
 
     @Override
@@ -156,7 +160,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        this.game.spriteBatch.dispose();
+        this.game.dispose();
         this.world.dispose();
         this.player.dispose();
         this.b2Debug.dispose();
@@ -165,6 +169,14 @@ public class GameScreen implements Screen {
     public void checkPlayerDeath() {
         if (this.getPlayerState() == State.DEATH) {
             this.hud.gameOver();
+            this.player.dispose();
+        }
+    }
+
+    public void chceckTimer() {
+        if (this.hud.getTimer() <= 0) {
+            this.hud.gameOver();
+            this.player.setState(State.DEATH);
             this.player.dispose();
         }
     }

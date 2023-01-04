@@ -23,7 +23,7 @@ import static com.cockatielstudios.Constants.PLAYER_DENSITY;
 import static com.cockatielstudios.Constants.ITEM_WIDTH;
 import static com.cockatielstudios.Constants.ITEM_HEIGHT;
 import static com.cockatielstudios.Constants.PLAYER_RECREATE_TIME;
-
+import static com.cockatielstudios.Constants.PLAYER_BLINK_TIME;
 import java.util.ArrayList;
 
 public class Player extends Entity {
@@ -37,11 +37,13 @@ public class Player extends Entity {
     private Facing facing;
 
     private float timer;
+    private float blinkTime;
 
     private boolean canJump;
     private boolean bodyExists;
     private boolean bodyDestroyed;
     private boolean isMovableToLeft;
+    private boolean isBlinking;
 
     public Player(GameScreen screen, Vector2 position, float width, float height) {
         super(screen, position, width, height, State.SMALL);
@@ -50,10 +52,12 @@ public class Player extends Entity {
         this.fireballID = 0;
         this.facing = Facing.RIGHT;
         this.timer = 0f;
+        this.blinkTime = PLAYER_BLINK_TIME;
         this.canJump = false;
         this.bodyExists = true;
         this.bodyDestroyed = false;
         this.isMovableToLeft = true;
+        this.isBlinking = false;
 
         this.animation = this.getAnimator().getSmallWalkRight();
         this.texture = this.animation.getKeyFrame(0f);
@@ -70,8 +74,12 @@ public class Player extends Entity {
 
     @Override
     public void render(SpriteBatch spriteBatch) {
-        this.texture = this.animation.getKeyFrame(this.animationTime, true);
-        spriteBatch.draw(this.texture, this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
+        if (this.getState() != State.DEATH) {
+            this.texture = this.animation.getKeyFrame(this.animationTime, true);
+            if (!this.isBlinking) {
+                spriteBatch.draw(this.texture, this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
+            }
+        }
 
         for (Fireball fireball : this.fireballs) {
             fireball.render(spriteBatch);
@@ -86,10 +94,6 @@ public class Player extends Entity {
         this.animate();
         this.canJump = this.getCollisions().isPlayerGrounded();
 
-        if (this.getCollisions().isPlayerFellOut()) {
-            this.dispose();
-        }
-
         for (Fireball fireball : this.fireballs) {
             fireball.update(delta);
         }
@@ -100,8 +104,8 @@ public class Player extends Entity {
 
     @Override
     public void dispose() {
-        if (!this.getWorld().isLocked() && this.bodyExists) {
-            this.bodyExists = false;
+        if (!this.getWorld().isLocked() && !this.bodyDestroyed) {
+            this.bodyDestroyed = true;
             this.getWorld().destroyBody(this.getBody());
         }
     }
@@ -116,7 +120,7 @@ public class Player extends Entity {
             this.facing = Facing.LEFT;
             this.getBody().applyLinearImpulse(new Vector2(-PLAYER_SPEED, 0), this.getBody().getWorldCenter(), true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.W) && this.canJump) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W) && this.canJump) {
             this.getBody().applyLinearImpulse(new Vector2(0f, PLAYER_JUMP_FORCE), this.getBody().getWorldCenter(), true);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
@@ -195,7 +199,7 @@ public class Player extends Entity {
         }
     }
 
-    public void checkFireballs() {
+    private void checkFireballs() {
         int index = -1;
         for (int i = 0; i < this.fireballs.size(); i++) {
             if (this.fireballs.get(i).getID() == this.getCollisions().getCollidedFireballID()) {
@@ -232,7 +236,7 @@ public class Player extends Entity {
         this.getBody().createFixture(fixtureDef).setUserData(this);
 
         // Create player bottom sensor
-        polygonShape.setAsBox(this.getWidth() / 3f, 0.02f, new Vector2(0f, -this.getHeight() / 1.8f), 0f);
+        polygonShape.setAsBox(this.getWidth() / 4f, 0.02f, new Vector2(0f, -this.getHeight() / 1.8f), 0f);
         fixtureDef.shape = polygonShape;
         fixtureDef.isSensor = true;
         this.getBody().createFixture(fixtureDef).setUserData(ObjectName.PLAYER_BOTTOM);
@@ -258,7 +262,7 @@ public class Player extends Entity {
         circleShape.dispose();
     }
 
-    public void throwFireball() {
+    private void throwFireball() {
         if (this.facing == Facing.RIGHT) {
             this.fireballs.add(new Fireball(this.getScreen(), this.getPosition(), ITEM_WIDTH, ITEM_HEIGHT, Facing.RIGHT, this.getAvailableFireballID()));
         } else {
@@ -275,16 +279,17 @@ public class Player extends Entity {
         if (this.bodyExists) {
             switch (this.getState()) {
                 case FLOWER:
+                    this.bodyExists = false;
                     this.setState(State.BIG);
                     break;
                 case BIG:
+                    this.bodyExists = false;
                     this.setState(State.SMALL);
                     break;
                 case SMALL:
                     this.setState(State.DEATH);
                     break;
             }
-            this.bodyExists = false;
         }
     }
 
@@ -305,14 +310,22 @@ public class Player extends Entity {
     private void recreateBody(float delta) {
         if (!this.getWorld().isLocked() && !this.bodyExists && !this.bodyDestroyed) {
             this.getWorld().destroyBody(this.getBody());
+            this.createBody(this.getPosition());
+            this.getBody().setAwake(false);
             this.bodyDestroyed = true;
         } else if (!this.bodyExists && this.bodyDestroyed) {
             this.timer += delta;
+            if (this.timer >= this.blinkTime) {
+                this.blinkTime += PLAYER_BLINK_TIME;
+                this.isBlinking = !this.isBlinking;
+            }
             if (this.timer >= PLAYER_RECREATE_TIME) {
+                this.isBlinking = false;
                 this.timer = 0f;
+                this.blinkTime = PLAYER_BLINK_TIME;
                 this.bodyExists = true;
                 this.bodyDestroyed = false;
-                this.createBody(this.getPosition());
+                this.getBody().setAwake(true);
             }
         }
     }

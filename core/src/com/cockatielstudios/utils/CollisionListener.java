@@ -24,7 +24,6 @@ public class CollisionListener implements ContactListener {
     private Hud hud;
 
     private boolean playerGrounded;
-    private boolean playerFellOut;
     private int collidedBlockID;
     private int collidedMysteryBlockID;
     private int collidedMushroomID;
@@ -63,10 +62,6 @@ public class CollisionListener implements ContactListener {
 
     public int getCollidedFireballID() {
         return this.collidedFireballID;
-    }
-
-    public boolean isPlayerFellOut() {
-        return this.playerFellOut;
     }
 
     @Override
@@ -127,9 +122,16 @@ public class CollisionListener implements ContactListener {
             this.collidedMysteryBlockID = mysteryBlock.getID();
         }
 
-        if ((fixtureA.getUserData() == ObjectName.PLAYER_BOTTOM || fixtureA.getUserData() == ObjectName.PLAYER_BOTTOM) &&
-                (fixtureA.getUserData() == ObjectName.FALL_DETECTOR || fixtureA.getUserData() == ObjectName.FALL_DETECTOR)) {
-            this.playerFellOut = true;
+        if ((fixtureA.getUserData() instanceof Player || fixtureB.getUserData() instanceof Player) &&
+                (fixtureA.getUserData() == ObjectName.FALL_DETECTOR || fixtureB.getUserData() == ObjectName.FALL_DETECTOR)) {
+
+            Player player;
+            if (fixtureA.getUserData() instanceof Player) {
+                player = (Player)fixtureA.getUserData();
+            } else {
+                player = (Player)fixtureB.getUserData();
+            }
+            player.setState(State.DEATH);
         }
 
         if ((fixtureA.getUserData() instanceof Mushroom || fixtureB.getUserData() instanceof Mushroom) &&

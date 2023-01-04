@@ -41,7 +41,7 @@ public class Mushroom extends Item {
         }
     }
 
-    public void movement() {
+    private void movement() {
         if (Math.abs(this.getBody().getLinearVelocity().x) < MUSHROOM_MAX_FORCE) {
             this.getBody().applyLinearImpulse(new Vector2(this.speed, 0f), this.getBody().getWorldCenter(), true);
         }

@@ -106,7 +106,7 @@ public class ObjectsManager {
         }
     }
 
-    public void removeObjects() {
+    private void removeObjects() {
         // Remove mushroom
         int index = -1;
         for (int i = 0; i < this.mushrooms.size(); i++) {
@@ -156,7 +156,7 @@ public class ObjectsManager {
         }
     }
 
-    public void spawnEnemies() {
+    private void spawnEnemies() {
         for (int i = 0; i < this.goombasData.size(); i++) {
             Vector2 position = this.goombasData.get(i);
             if (position.x - (this.screen.getPlayerPosition().x * PPM) < ENEMY_SPAWN_DISTANCE) {
