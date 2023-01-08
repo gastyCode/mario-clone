@@ -26,6 +26,9 @@ import static com.cockatielstudios.Constants.PLAYER_RECREATE_TIME;
 import static com.cockatielstudios.Constants.PLAYER_BLINK_TIME;
 import java.util.ArrayList;
 
+/**
+ * Trieda hráča, ktorá dedí z triedy Entity, slúži ako vstup pre užívateľa.
+ */
 public class Player extends Entity {
     private TextureRegion texture;
     private Animation<TextureRegion> animation;
@@ -45,6 +48,14 @@ public class Player extends Entity {
     private boolean isMovableToLeft;
     private boolean isBlinking;
 
+    /**
+     * Konštruktor, ktorý nastavuje všetky potrebné atribúty hráča.
+     *
+     * @param screen Inštancia tiredy GameScreen, ktorá vykresľuje samotnú hru.
+     * @param position Pozícia hráča.
+     * @param width Šírka hráča.
+     * @param height Výška hráča.
+     */
     public Player(GameScreen screen, Vector2 position, float width, float height) {
         super(screen, position, width, height, State.SMALL);
         this.createBody(this.getPosition());
@@ -72,6 +83,11 @@ public class Player extends Entity {
         this.isMovableToLeft = movableToLeft;
     }
 
+    /**
+     * Vykresľuje zvolený rámec animácie pokiaľ hráč žije.
+     *
+     * @param spriteBatch Pomocník pri vykresľovaní textúr.
+     */
     @Override
     public void render(SpriteBatch spriteBatch) {
         if (this.getState() != State.DEATH) {
@@ -86,6 +102,12 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Dochádza k pohybu hráča, zvoleniu správnej animácie, kontrole skákania, aktualizácií projektilov, zarovanie tela
+     * s textúrov a nakoniec aj pretvoreniu tela pri zvýšení života.
+     *
+     * @param delta Čas v sekundách od posledného rámca.
+     */
     @Override
     public void update(float delta) {
         this.recreateBody(delta);
@@ -102,6 +124,9 @@ public class Player extends Entity {
         this.setCornerPosition(this.getBody().getPosition());
     }
 
+    /**
+     * Ak je svet odomknutý a telo nie je zničené, dochádza k jeho zničeniu.
+     */
     @Override
     public void dispose() {
         if (!this.getWorld().isLocked() && !this.bodyDestroyed) {
@@ -110,6 +135,10 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Pri stlačení jedného z tlačidiel ovládania sa aplikuje sila pre pohyb k príslušnému smeru. V prípade klávesy
+     * "medzerník" a kontrole stavu hráča dochádza k hodu projektilu.
+     */
     @Override
     public void movement() {
         if (Gdx.input.isKeyPressed(Input.Keys.D) && this.getBody().getLinearVelocity().x <= PLAYER_MAX_FORCE) {
@@ -130,6 +159,9 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Kontrola príslušných atribútov hráča, podľa ktorých sa následne vyberá potrebná animácia.
+     */
     @Override
     public void animate() {
         switch (this.getState()) {
@@ -275,6 +307,9 @@ public class Player extends Entity {
         return this.fireballID;
     }
 
+    /**
+     * Ak existuje telo hráča, zmeň stav o stupeň nižšie a vymaž telo alebo zmeň stav na smrť.
+     */
     public void takeDamage() {
         if (this.bodyExists) {
             switch (this.getState()) {
@@ -293,6 +328,9 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Ak existuje telo hráča, zmeň stav o stupeň vyššie a vymaž telo hráča.
+     */
     public void powerUp() {
         if (this.bodyExists) {
             switch (this.getState()) {
@@ -307,6 +345,8 @@ public class Player extends Entity {
         }
     }
 
+    // Táto metóda je inšpirovaná tutoriálom na webe:
+    // https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_hello.html
     private void recreateBody(float delta) {
         if (!this.getWorld().isLocked() && !this.bodyExists && !this.bodyDestroyed) {
             this.getWorld().destroyBody(this.getBody());

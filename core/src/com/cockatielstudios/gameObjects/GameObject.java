@@ -8,6 +8,11 @@ import com.cockatielstudios.screens.GameScreen;
 import com.cockatielstudios.utils.CollisionListener;
 import static com.cockatielstudios.Constants.PPM;
 
+/**
+ * Abstraktná trieda potrebná na zjednodušenie vytvárania herných objektov.
+ *
+ * Nápad vytvorenie tejto triedy bol vďaka video tutoriálu: https://youtu.be/6QKhSctuMcs
+ */
 public abstract class GameObject {
     private GameScreen screen;
     private Vector2 position;
@@ -15,6 +20,14 @@ public abstract class GameObject {
     private float height;
     private Body body;
 
+    /**
+     * Konštruktor, ktorý nastavuje základné atributy herného objektu.
+     *
+     * @param screen Inštancia tiredy GameScreen, ktorá vykresľuje samotnú hru.
+     * @param position Pozícia herného objektu.
+     * @param width Šírka herného objektu.
+     * @param height Výška herného objektu.
+     */
     public GameObject(GameScreen screen, Vector2 position, float width, float height) {
         this.screen = screen;
         this.position = new Vector2(position.x / PPM, position.y / PPM);
@@ -62,9 +75,22 @@ public abstract class GameObject {
         this.position = position;
     }
 
+    /**
+     * Vykresľuje textúru herného objektu.
+     *
+     * @param spriteBatch Pomocník pri vykresľovaní textúr.
+     */
     public abstract void render(SpriteBatch spriteBatch);
 
+    /**
+     * Aktualizuje herný objekt.
+     *
+     * @param delta Čas v sekundách od posledného rámca.
+     */
     public abstract void update(float delta);
 
+    /**
+     * Zničí herný objekt.
+     */
     public abstract void dispose();
 }

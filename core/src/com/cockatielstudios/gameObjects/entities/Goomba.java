@@ -13,6 +13,9 @@ import com.cockatielstudios.utils.State;
 import static com.cockatielstudios.Constants.GOOMBA_SPEED;
 import static com.cockatielstudios.Constants.GOOMBA_MAX_FORCE;
 
+/**
+ * Trieda nepriateľa, ktorá dedí z triedy Entity, slúži ako prekážka pre hráča.
+ */
 public class Goomba extends Entity {
     private TextureRegion texture;
     private Animation<TextureRegion> animation;
@@ -22,6 +25,16 @@ public class Goomba extends Entity {
     private boolean isDisposed;
     private int id;
 
+
+    /**
+     * Konštruktor, ktorý nastavuje všetky potrebné atribúty nepriateľa.
+     *
+     * @param screen Inštancia tiredy GameScreen, ktorá vykresľuje samotnú hru.
+     * @param position Pozícia nepriateľa.
+     * @param width Šírka nepriateľa.
+     * @param height Výška nepriateľa.
+     * @param id Identifikačné číslo nepriateľa.
+     */
     public Goomba(GameScreen screen, Vector2 position, float width, float height, int id) {
         super(screen, position, width, height, State.DEFAULT);
         this.createBody(this.getPosition());
@@ -46,6 +59,9 @@ public class Goomba extends Entity {
         return this.getScreen().getAnimator();
     }
 
+    /**
+     * Ak je svet odomknutý a telo nie je zničené, dochádza k jeho zničeniu.
+     */
     @Override
     public void dispose() {
         if (!this.isDisposed && !this.getWorld().isLocked()) {
@@ -54,12 +70,22 @@ public class Goomba extends Entity {
         }
     }
 
+    /**
+     * Vykresľuje zvolený rámec animácie.
+     *
+     * @param spriteBatch Pomocník pri vykresľovaní textúr.
+     */
     @Override
     public void render(SpriteBatch spriteBatch) {
         this.texture = this.animation.getKeyFrame(this.animationTime, true);
         spriteBatch.draw(this.texture, this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
     }
 
+    /**
+     * Dochádza k pohybu nepriateľa, zvoleniu správnej animácie a zarovnaní tela s textúrov.
+     *
+     * @param delta Čas v sekundách od posledného rámca
+     */
     @Override
     public void update(float delta) {
         this.movement();
@@ -69,6 +95,9 @@ public class Goomba extends Entity {
         this.setCornerPosition(this.getBody().getPosition());
     }
 
+    /**
+     * Aplikuje silu pre pohyb tela do príslušného smeru.
+     */
     @Override
     public void movement() {
         if (Math.abs(this.getBody().getLinearVelocity().x) < GOOMBA_MAX_FORCE) {
@@ -76,6 +105,9 @@ public class Goomba extends Entity {
         }
     }
 
+    /**
+     * Kontrola príslušných atribútov nepriateľa, podľa ktorých sa následne vyberá potrebná animácia.
+     */
     @Override
     public void animate() {
         if (this.isDisposed) {
@@ -85,10 +117,15 @@ public class Goomba extends Entity {
         }
     }
 
+    /**
+     * Zmení smer pohybu nepriateľa.
+     */
     public void switchDirection() {
         this.speed = -this.speed;
     }
 
+    // Táto metóda je inšpirovaná tutoriálom na webe:
+    // https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_hello.html
     private void createBody(Vector2 position) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;

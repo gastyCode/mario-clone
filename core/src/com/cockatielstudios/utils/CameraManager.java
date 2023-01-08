@@ -8,17 +8,29 @@ import static com.cockatielstudios.Constants.WORLD_WIDTH;
 import static com.cockatielstudios.Constants.PPM;
 import static com.cockatielstudios.Constants.CAMERA_SPEED;
 
+/**
+ * Trieda, ktorá je potrebná pre ovládanie kamery.
+ */
 public class CameraManager {
     private OrthographicCamera camera;
     private Player player;
     private float movedDistance;
 
+    /**
+     * Konštruktor, ktorý nastavuje atribúty potrebné pre správne ovládanie kamery.
+     *
+     * @param camera Kamera, ktorá sa bude ovládať.
+     * @param player Hráč
+     */
     public CameraManager(OrthographicCamera camera, Player player) {
         this.camera = camera;
         this.player = player;
         this.movedDistance = this.camera.position.x + (WORLD_WIDTH / PPM) / 6;
     }
 
+    /**
+     * Dochádza k pohybu a aktualizácií kamery a kontrole hráča na obrazovke.
+     */
     public void update() {
         this.moveCamera();
         this.checkPlayerOnScreen();

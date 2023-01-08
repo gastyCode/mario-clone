@@ -12,6 +12,12 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
+/**
+ * Trieda, ktorá slúži na načítanie všetkých potrebných assetov.
+ *
+ * Assety z pôvodnej hry Super Mario Bros som prebral zo stránky: https://www.mariouniverse.com/sprites-nes-smb/
+ * Font som prebral zo stránky: https://www.dafont.com/joystix.font
+ */
 public class Assets {
     public static final AssetManager MANAGER = new AssetManager();
 
@@ -26,6 +32,9 @@ public class Assets {
     public static final AssetDescriptor<Texture> BACKGOUND = new AssetDescriptor<Texture>("sprites/bg.png", Texture.class);
     public static final AssetDescriptor<Texture> LOGO = new AssetDescriptor<Texture>("sprites/logo.png", Texture.class);
 
+    /**
+     * Načítanie všetkých assetov.
+     */
     public static void load() {
         MANAGER.load(PLAYER);
         MANAGER.load(EMPTY_BLOCK);
@@ -47,6 +56,9 @@ public class Assets {
         MANAGER.finishLoading();
     }
 
+    /**
+     * Odstránenie všetkých assetov.
+     */
     public static void dispose() {
         MANAGER.dispose();
     }

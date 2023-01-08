@@ -8,7 +8,18 @@ import com.cockatielstudios.gameObjects.GameObject;
 import com.cockatielstudios.screens.GameScreen;
 import com.cockatielstudios.utils.ObjectName;
 
+/**
+ * Trieda, ktorá dedí z triedy GameObject, potrebná na vytvorenie vlajky pre signalizáciu konca levelu.
+ */
 public class Flag extends GameObject {
+    /**
+     * Konštruktor, ktorý nastavuje atributy vlajky.
+     *
+     * @param screen Inštancia tiredy GameScreen, ktorá vykresľuje samotnú hru.
+     * @param position Pozícia vlajky.
+     * @param width Šírka vlajky.
+     * @param height Výška vlajky.
+     */
     public Flag(GameScreen screen, Vector2 position, float width, float height) {
         super(screen, position, width, height);
         this.createBody(this.getPosition());
@@ -29,6 +40,8 @@ public class Flag extends GameObject {
 
     }
 
+    // Táto metóda je inšpirovaná tutoriálom na webe:
+    // https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_hello.html
     private void createBody(Vector2 position) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;

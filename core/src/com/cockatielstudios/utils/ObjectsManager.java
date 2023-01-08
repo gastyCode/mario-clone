@@ -17,6 +17,9 @@ import static com.cockatielstudios.Constants.ENEMY_HEIGHT;
 
 import java.util.ArrayList;
 
+/**
+ * Trieda, potrebná na manažovanie objektov.
+ */
 public class ObjectsManager {
     private GameScreen screen;
 
@@ -31,6 +34,12 @@ public class ObjectsManager {
 
     private int availableID;
 
+    /**
+     * Konštruktor, ktorý nastavuje atribúty manažera a všetky potrebné kontajnere pre všetky objekty, ktoré bude
+     * manažovať.
+     *
+     * @param screen Inštancia tiredy GameScreen, ktorá vykresľuje samotnú hru.
+     */
     public ObjectsManager(GameScreen screen) {
         this.screen = screen;
         this.availableID = 0;
@@ -55,12 +64,21 @@ public class ObjectsManager {
         return this.screen.getCollisionListener();
     }
 
+    /**
+     * Vymazáva objekty, ktoré už nie sú potrebné, vytvára nepriateľov a kontroluje kolízie medzi objektami.
+     */
     public void update() {
         this.removeObjects();
         this.spawnEnemies();
         this.checkObjects();
     }
 
+    /**
+     * Vykreslí a aktualizuje každý objekt v kontajneroch, ktoré manažuje.
+     *
+     * @param spriteBatch Pomocník pri vykresľovaní textúr.
+     * @param delta Čas v sekundách od posledného rámca.
+     */
     public void render(SpriteBatch spriteBatch, float delta) {
         for (Block block : this.blocks) {
             block.render(spriteBatch);
@@ -166,26 +184,56 @@ public class ObjectsManager {
         }
     }
 
+    /**
+     * Pridá blok do kontajneru blokov.
+     *
+     * @param block Blok na pridanie.
+     */
     public void addBlock(Block block) {
         this.blocks.add(block);
     }
 
+    /**
+     * Pridá záhadný blok do kontajneru záhadných blokov.
+     *
+     * @param mysteryBlock Záhadný blok na pridanie.
+     */
     public void addMysteryBlock(MysteryBlock mysteryBlock) {
         this.mysteryBlocks.add(mysteryBlock);
     }
 
+    /**
+     * Pridá hub do kontajneru húb.
+     *
+     * @param mushroom Huba na pridanie.
+     */
     public void addMushroom(Mushroom mushroom) {
         this.mushrooms.add(mushroom);
     }
 
+    /**
+     * Pridá kvet do kontajneru kvetov.
+     *
+     * @param flower Kvet na pridanie.
+     */
     public void addFlower(Flower flower) {
         this.flowers.add(flower);
     }
 
+    /**
+     * Pridá mincu do kontajneru mincí.
+     *
+     * @param coin Minca na pridanie.
+     */
     public void addCoin(Coin coin) {
         this.coins.add(coin);
     }
 
+    /**
+     * Pridá pozíciu nepriateľa do kontajneru dát nepriateľov.
+     *
+     * @param position Pozícia na pridanie.
+     */
     public void addGoombaData(Vector2 position) {
         this.goombasData.add(position);
     }

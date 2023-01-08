@@ -24,6 +24,9 @@ import static com.cockatielstudios.Constants.WORLD_HEIGHT;
 import static com.cockatielstudios.Constants.PPM;
 import static com.cockatielstudios.Constants.GRAVITY;
 
+/**
+ * Trieda reprezentujúca samostatnú hru, ktorá implementuje rozhranie Screen
+ */
 public class GameScreen implements Screen {
     private MainGame game;
     private SpriteBatch spriteBatch;
@@ -45,6 +48,16 @@ public class GameScreen implements Screen {
 
     private boolean isWin;
 
+    /**
+     * Konštruktor, ktorý sa stará o správne nastavenie hry a teda aj generáciu samotného levelu.
+     *
+     * Použitie triedy Viewport je inšpirované video tutoriálom: https://youtu.be/D7u5B2Oh9r0
+     * Použitie triedy World je inšpirované tutoriálom na webe:
+     * https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_hello.html
+     *
+     * @param game Inštancia triedy MainGame, ktorý sa stará o chod celej hry.
+     * @param spriteBatch Pomocník pri vykresľovaní textúr.
+     */
     public GameScreen(MainGame game, SpriteBatch spriteBatch) {
         this.game = game;
         this.spriteBatch = spriteBatch;
@@ -102,6 +115,12 @@ public class GameScreen implements Screen {
         this.isWin = win;
     }
 
+    /**
+     * Dochádza k aktualizovaní sveta, kamery, hráča, objektov a HUDu. Zároveň sa kontroluje smrť hráča, časovač a či
+     * došlo k výhre.
+     *
+     * @param delta Čas v sekundách od posledného rámca.
+     */
     public void update(float delta) {
         this.world.step(1 / 60f, 6, 2);
 
@@ -121,6 +140,11 @@ public class GameScreen implements Screen {
 
     }
 
+    /**
+     * Vykreslenie herného sveta, objektov, hráča a HUDu.
+     *
+     * @param delta Čas v sekundách od posledného rámca.
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -138,6 +162,12 @@ public class GameScreen implements Screen {
 //        this.b2Debug.render(this.world, this.camera.combined);
     }
 
+    /**
+     * Pri zmene veľkosti okna zmení veľkosť hry, aby mala rovnaké rozmery ako okno.
+     *
+     * @param width Nová šírka okna.
+     * @param height Nová výška okna.
+     */
     @Override
     public void resize(int width, int height) {
         this.viewport.update(width, height);
@@ -158,6 +188,9 @@ public class GameScreen implements Screen {
 
     }
 
+    /**
+     * Uvoľní pamať zničením objektov, ktoré boli vytvorené v metóde create.
+     */
     @Override
     public void dispose() {
         this.game.dispose();
@@ -166,6 +199,9 @@ public class GameScreen implements Screen {
         this.b2Debug.dispose();
     }
 
+    /**
+     * Pri smrti hráča sa zobrazí text "GAME OVER!"
+     */
     public void checkPlayerDeath() {
         if (this.getPlayerState() == State.DEATH) {
             this.hud.gameOver();
@@ -173,6 +209,9 @@ public class GameScreen implements Screen {
         }
     }
 
+    /**
+     * Pri vypršaní časovača hráč zomrie a zobrazí sa text "GAME OVER!"
+     */
     public void chceckTimer() {
         if (this.hud.getTimer() <= 0) {
             this.hud.gameOver();
@@ -181,6 +220,9 @@ public class GameScreen implements Screen {
         }
     }
 
+    /**
+     * Pri výhre sa zobrazí text "YOU WIN!"
+     */
     public void checkWin() {
         if (this.isWin) {
             this.hud.win();

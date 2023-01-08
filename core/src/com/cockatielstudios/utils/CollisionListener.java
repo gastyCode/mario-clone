@@ -19,6 +19,12 @@ import static com.cockatielstudios.Constants.BREAK_SCORE;
 import static com.cockatielstudios.Constants.GOOMBA_SCORE;
 import static com.cockatielstudios.Constants.POWER_UP_SCORE;
 
+
+/**
+ * Trieda, ktorá implementuje rozhranie ContactListener, slúži ako detektor kolízií medzi dvoma telami.
+ *
+ * Táto trieda je inšpirovaná video tutoriálom: https://youtu.be/ien40lFovG8
+ */
 public class CollisionListener implements ContactListener {
     private GameScreen screen;
     private Hud hud;
@@ -31,6 +37,12 @@ public class CollisionListener implements ContactListener {
     private int collidedGoombaID;
     private int collidedFireballID;
 
+    /**
+     * Konštruktor, ktorý nastavuje atribúty potrebné správne fungovanie kolízií.
+     *
+     * @param screen Inštancia tiredy GameScreen, ktorá vykresľuje samotnú hru.
+     * @param hud HUD, ktorý zaznamenáva skóre hráča.
+     */
     public CollisionListener(GameScreen screen, Hud hud) {
         this.screen = screen;
         this.hud = hud;
@@ -64,6 +76,12 @@ public class CollisionListener implements ContactListener {
         return this.collidedFireballID;
     }
 
+
+    /**
+     * Kontrola kolízií medzi objektami pri začiatku kontaktu.
+     *
+     * @param contact Kontakt.
+     */
     @Override
     public void beginContact(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();
@@ -255,6 +273,11 @@ public class CollisionListener implements ContactListener {
         }
     }
 
+    /**
+     * Kontrola kolízií medzi objektami pri konci kontaktu.
+     *
+     * @param contact Kontakt.
+     */
     @Override
     public void endContact(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();

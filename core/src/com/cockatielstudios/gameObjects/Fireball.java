@@ -13,12 +13,25 @@ import static com.cockatielstudios.Constants.FIREBALL_FORCE;
 import static com.cockatielstudios.Constants.FIREBALL_SPEED;
 import static com.cockatielstudios.Constants.PPM;
 
+/**
+ * Trieda, ktorá dedí z triedy GameObject, potrebná na vytvorenie projektilu pre hráča.
+ */
 public class Fireball extends GameObject {
     private Texture texture;
     private float speed;
     private int id;
     private boolean isDisposed;
 
+    /**
+     * Konštruktor, ktorý nastavuje atributy projektilu.
+     *
+     * @param screen Inštancia tiredy GameScreen, ktorá vykresľuje samotnú hru.
+     * @param position Pozícia projektilu.
+     * @param width Šírka projektilu.
+     * @param height Výška projektilu.
+     * @param facing Otočenie hráča.
+     * @param id Identifikačné číslo projektilu.
+     */
     public Fireball(GameScreen screen, Vector2 position, float width, float height, Facing facing, int id) {
         super(screen, position, width, height);
         this.texture = Assets.MANAGER.get(Assets.FIREBALL);
@@ -41,16 +54,29 @@ public class Fireball extends GameObject {
         return this.id;
     }
 
+    /**
+     * Vykresľuje textúru projektilu.
+     *
+     * @param spriteBatch Pomocník pri vykresľovaní textúr.
+     */
     @Override
     public void render(SpriteBatch spriteBatch) {
         spriteBatch.draw(this.texture, this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
     }
 
+    /**
+     * Dochádza k zarovnaní tela s textúrov.
+     *
+     * @param delta Čas v sekundách od posledného rámca.
+     */
     @Override
     public void update(float delta) {
         this.setCornerPosition(this.getBody().getPosition());
     }
 
+    /**
+     * Ak je svet odomknutý a telo ešte nebolo zničené, dochádza k zničeniu tela.
+     */
     @Override
     public void dispose() {
         if (!this.isDisposed) {
@@ -61,11 +87,16 @@ public class Fireball extends GameObject {
         }
     }
 
+    /**
+     * Odrazenie projektilu od zeme v tvare vlnovky.+
+     */
     public void bounce() {
         this.getBody().setLinearVelocity(0f, 0f);
         this.getBody().applyLinearImpulse(new Vector2(this.speed, FIREBALL_FORCE), this.getBody().getWorldCenter(), true);
     }
 
+    // Táto metóda je inšpirovaná tutoriálom na webe:
+    // https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_hello.html
     private void createBody(Vector2 position) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;

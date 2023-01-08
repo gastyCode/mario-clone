@@ -5,6 +5,11 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.cockatielstudios.Assets;
 
+/**
+ * Trieda, potebná pre vytvorenie a organizáciu všetkých animácií.
+ *
+ * Táto trieda je inšpirovaná tutoriálom na webe: https://libgdx.com/wiki/graphics/2d/2d-animation
+ */
 public class Animator {
     // Player animation
     private Texture playerSheet;
@@ -36,6 +41,9 @@ public class Animator {
     private Animation<TextureRegion> goombaWalk;
     private Animation<TextureRegion> goombaDeath;
 
+    /**
+     * Konštruktor, ktorý slúži na vytvorenie všetkých potrebných animácií.
+     */
     public Animator() {
         this.playerSheet = Assets.MANAGER.get(Assets.PLAYER);
         TextureRegion[][] player = TextureRegion.split(this.playerSheet, this.playerSheet.getWidth() / PLAYER_COLUMNS, this.playerSheet.getHeight() / PLAYER_ROWS);

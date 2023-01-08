@@ -21,6 +21,9 @@ import com.cockatielstudios.MainGame;
 import static com.cockatielstudios.Constants.WORLD_WIDTH;
 import static com.cockatielstudios.Constants.WORLD_HEIGHT;
 
+/**
+ * Trieda reprezentujúca menu hry, ktorá implementuje rozhranie Screen
+ */
 public class MenuScreen implements Screen {
     private MainGame game;
     private SpriteBatch spriteBatch;
@@ -32,6 +35,12 @@ public class MenuScreen implements Screen {
     private TextButton startButton;
     private TextButton quitButton;
 
+    /**
+     * Konštruktor, ktorý sa stará o správne nastavenie menu.
+     *
+     * @param game Inštancia triedy MainGame, ktorý sa stará o chod celej hry.
+     * @param spriteBatch Pomocník pri vykresľovaní textúr.
+     */
     public MenuScreen(MainGame game, SpriteBatch spriteBatch) {
         this.game = game;
         this.spriteBatch = spriteBatch;
@@ -75,6 +84,12 @@ public class MenuScreen implements Screen {
 
     }
 
+    /**
+     * Dochádza ku aktualizovaní kamery a kontorle stlačenia tlačidiel. Pri stlačení tlačidla štart sa spustí trieda
+     * GameScreen a pri stlačení tlačidla skončiť sa vypne celá hra.
+     *
+     * @param delta Čas v sekundách od posledného rámca.
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -91,6 +106,12 @@ public class MenuScreen implements Screen {
         this.stage.draw();
     }
 
+    /**
+     * Pri zmene veľkosti okna zmení veľkosť hry, aby mala rovnaké rozmery ako okno.
+     *
+     * @param width Nová šírka okna.
+     * @param height Nová výška okna.
+     */
     @Override
     public void resize(int width, int height) {
         this.viewport.update(width, height);
@@ -111,6 +132,9 @@ public class MenuScreen implements Screen {
 
     }
 
+    /**
+     * Uvoľní pamať zničením objektov, ktoré boli vytvorené v metóde create.
+     */
     @Override
     public void dispose() {
         this.game.dispose();

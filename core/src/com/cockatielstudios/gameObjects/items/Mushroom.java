@@ -7,11 +7,22 @@ import com.cockatielstudios.screens.GameScreen;
 import static com.cockatielstudios.Constants.MUSHROOM_SPEED;
 import static com.cockatielstudios.Constants.MUSHROOM_MAX_FORCE;
 
+/**
+ * Trieda, ktorá dedí z triedy Item, potrebná na vytvorenie predmetu, ktorý zvýši hráčov stav.
+ */
 public class Mushroom extends Item {
     private final TextureRegion texture;
     private float speed;
     private boolean isDisposed;
 
+    /**
+     * Konštruktor, ktorý nastavuje všetký potrebné atribúty huby.
+     *
+     * @param screen Inštancia tiredy GameScreen, ktorá vykresľuje samotnú hru.
+     * @param position Pozícia huby.
+     * @param width Šírka huby.
+     * @param height Výška huby.
+     */
     public Mushroom(GameScreen screen, Vector2 position, float width, float height, int id) {
         super(screen, position, width, height, id);
         this.createBody(this.getPosition(), this);
@@ -20,17 +31,30 @@ public class Mushroom extends Item {
         this.isDisposed = false;
     }
 
+    /**
+     * Vykresľuje textúru huby.
+     *
+     * @param spriteBatch Pomocník pri vykresľovaní textúr.
+     */
     @Override
     public void render(SpriteBatch spriteBatch) {
         spriteBatch.draw(this.texture, this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
     }
 
+    /**
+     * Dochádza k pohybu a zarovnaniu tela s textúrov.
+     *
+     * @param delta Čas v sekundách od posledného rámca.
+     */
     @Override
     public void update(float delta) {
         this.movement();
         this.setPosition(this.getBody().getPosition());
     }
 
+    /**
+     * Ak je svet odomknutý a telo ešte nebolo zničené, dochádza k zničeniu tela.
+     */
     @Override
     public void dispose() {
         if (!this.isDisposed) {
@@ -47,6 +71,9 @@ public class Mushroom extends Item {
         }
     }
 
+    /**
+     * Zmení smer pohybu huby.
+     */
     public void switchDirection() {
         this.speed = -this.speed;
     }

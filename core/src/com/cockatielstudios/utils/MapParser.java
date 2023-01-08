@@ -23,6 +23,12 @@ import static com.cockatielstudios.Constants.PPM;
 import static com.cockatielstudios.Constants.FALL_SENSOR_HEIGHT;
 import static com.cockatielstudios.Constants.WORLD_WIDTH;
 
+/**
+ * Trieda, potrebná pre vytvorenie hernej mapy z ".tmx" súboru a správne uloženie herných objektov.
+ *
+ * Táto trieda je inšpirovaná článkom na webe: https://lyze.dev/2021/03/25/libGDX-Tiled-Box2D-example-objects/
+ * a https://libgdx.com/wiki/graphics/2d/tile-maps
+ */
 public class MapParser {
     private GameScreen screen;
     private ObjectsManager objectsManager;
@@ -31,7 +37,13 @@ public class MapParser {
     private Body fallSensorBody;
 
 
-
+    /**
+     * Konštruktor, ktorý nastavuje atribúty potrebné pre vygenerovanie mapy.
+     *
+     * @param map Mapa, ktorá bude vygenerovaná.
+     * @param objectsManager Manažér objektov, ktorý sa bude o vytvorené objekty starať.
+     * @param screen Inštancia tiredy GameScreen, ktorá vykresľuje samotnú hru.
+     */
     public MapParser(TiledMap map, ObjectsManager objectsManager, GameScreen screen) {
         this.screen = screen;
         this.objectsManager = objectsManager;
@@ -44,14 +56,25 @@ public class MapParser {
         return this.screen.getWorld();
     }
 
+    /**
+     * Dochádza k vykreslení mapy na kameru.
+     *
+     * @param camera Kamera, ktorá sa nachádza v manažérovi kamery.
+     */
     public void update(OrthographicCamera camera) {
         this.renderer.setView(camera);
     }
 
+    /**
+     * Vykreslenie mapy.
+     */
     public void render() {
         this.renderer.render();
     }
 
+    /**
+     * Vytvorenie všetkých herných objektov podľa parametrov zadaných v súbore mapy.
+     */
     public void parseObjects() {
         MapObjects groundObjects = this.map.getLayers().get("Ground").getObjects();
         MapObjects pipeObjects = this.map.getLayers().get("Pipes").getObjects();
